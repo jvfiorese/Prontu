@@ -1,244 +1,279 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prontu — Acesso</title>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #f0f4f8;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-.card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-    padding: 40px 36px;
-    width: 100%;
-    max-width: 420px;
-}
-.logo {
-    text-align: center;
-    margin-bottom: 28px;
-}
-.logo .logo-icon {
-    font-size: 52px;
-    line-height: 1;
-    display: block;
-    margin-bottom: 8px;
-}
-.logo h1 {
-    font-size: 26px;
-    font-weight: 800;
-    color: #e85252;
-    margin-bottom: 2px;
-}
-.logo p {
-    font-size: 12px;
-    color: #999;
-    margin-top: 2px;
-}
-.panel { display: none; }
-.panel.active { display: block; }
-.form-group { margin-bottom: 14px; }
-label { font-size: 12px; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
-input[type=email], input[type=password], input[type=text] {
-    width: 100%; padding: 11px 14px;
-    border: 1.5px solid #e0e0e0; border-radius: 8px;
-    font-size: 15px; outline: none; transition: border-color 0.15s;
-    font-family: inherit;
-}
-input:focus { border-color: #e85252; }
-.btn {
-    width: 100%; padding: 13px;
-    background: #e85252; color: white;
-    border: none; border-radius: 8px;
-    font-size: 15px; font-weight: 600;
-    cursor: pointer; transition: background 0.15s;
-    margin-top: 4px;
-    font-family: inherit;
-}
-.btn:hover { background: #c94444; }
-.btn:disabled { background: #ccc; cursor: not-allowed; }
-.btn-secondary {
-    width: 100%; padding: 12px;
-    background: white; color: #e85252;
-    border: 2px solid #e85252; border-radius: 8px;
-    font-size: 15px; font-weight: 600;
-    cursor: pointer; transition: all 0.15s;
-    margin-top: 10px;
-    font-family: inherit;
-}
-.btn-secondary:hover { background: #fff5f5; }
-.msg { margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 13px; display: none; }
-.msg.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
-.msg.error   { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
-.contact-link {
-    display: block; text-align: center;
-    font-size: 12px; color: #bbb; margin-top: 14px;
-}
-.contact-link a { color: #aaa; }
-.badge {
-    display: inline-block;
-    background: #e8f5e9; color: #2e7d32;
-    border-radius: 20px; font-size: 11px;
-    font-weight: 600; padding: 3px 10px;
-    margin-top: 6px;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prontu — Assistente Médico</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+      width: 100%;
+      max-width: 400px;
+      padding: 40px 36px 36px;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .brand img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 12px;
+    }
+
+    .brand h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a2744;
+      letter-spacing: -0.5px;
+    }
+
+    .brand p {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .tabs {
+      display: flex;
+      background: #f0f2f8;
+      border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 28px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: #1a2744;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .field { margin-bottom: 16px; }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      color: #1a2744;
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      background: #fff;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      background: #1a2744;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+
+    .btn-primary:hover { background: #263a6e; }
+    .btn-primary:active { transform: scale(0.99); }
+    .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .badge {
+      display: inline-block;
+      background: #f0fdf4;
+      color: #16a34a;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+      border: 1px solid #bbf7d0;
+    }
+
+    .msg {
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .msg.error  { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; display: block; }
+    .msg.success{ background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; display: block; }
+
+    .footer-text {
+      text-align: center;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 20px;
+    }
+    .footer-text a { color: #4f46e5; text-decoration: none; }
+  </style>
 </head>
 <body>
 <div class="card">
-    <div class="logo">
-        <span class="logo-icon">🩺</span>
-        <h1>Prontu</h1>
-        <p>Assistente médico para residentes</p>
-        <span class="badge">✓ Acesso gratuito</span>
-    </div>
+  <div class="brand">
+    <img src="/logo.png" alt="Prontu">
+    <h1>Prontu</h1>
+    <p>Assistente médico para residentes</p>
+    <span class="badge">✓ Acesso gratuito</span>
+  </div>
 
-    <!-- LOGIN -->
-    <div id="panel-login" class="panel active">
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
-        </div>
-        <div class="form-group">
-            <label>Senha</label>
-            <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
-        </div>
-        <button class="btn" id="btn-login" onclick="doLogin()">Entrar →</button>
-        <div id="login-msg" class="msg"></div>
-        <button class="btn-secondary" onclick="showPanel('register')">Criar conta</button>
-        <div class="contact-link"><a id="contact-link" href="#">Dúvidas? Entre em contato</a></div>
-    </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('login')">Entrar</button>
+    <button class="tab-btn" onclick="switchTab('register')">Criar conta</button>
+  </div>
 
-    <!-- REGISTRO -->
-    <div id="panel-register" class="panel">
-        <div class="form-group">
-            <label>Nome</label>
-            <input type="text" id="reg-name" placeholder="Seu nome completo">
-        </div>
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="reg-email" placeholder="seu@email.com">
-        </div>
-        <div class="form-group">
-            <label>Senha (mínimo 6 caracteres)</label>
-            <input type="password" id="reg-password" placeholder="••••••••">
-        </div>
-        <button class="btn" id="btn-register" onclick="doRegister()">Criar conta →</button>
-        <div id="reg-msg" class="msg"></div>
-        <button class="btn-secondary" onclick="showPanel('login')">Já tenho conta — Fazer login</button>
-        <div class="contact-link" style="margin-top:10px; font-size:11px;">Acesso gratuito para residentes.</div>
+  <!-- LOGIN -->
+  <div class="tab-panel active" id="tab-login">
+    <div class="msg" id="login-msg"></div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
     </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">Entrar →</button>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="tab-panel" id="tab-register">
+    <div class="msg" id="register-msg"></div>
+    <div class="field">
+      <label>Nome</label>
+      <input type="text" id="reg-name" placeholder="Dr. Seu Nome" autocomplete="name">
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="reg-email" placeholder="seu@email.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="reg-password" placeholder="mínimo 6 caracteres" autocomplete="new-password">
+    </div>
+    <button class="btn-primary" id="reg-btn" onclick="doRegister()">Criar conta →</button>
+  </div>
+
+  <p class="footer-text" id="contact-line"></p>
 </div>
 
 <script>
-function showPanel(name) {
-    document.getElementById('panel-login').classList.toggle('active', name === 'login');
-    document.getElementById('panel-register').classList.toggle('active', name === 'register');
-    document.getElementById('login-msg').style.display = 'none';
-    document.getElementById('reg-msg').style.display = 'none';
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0) === (tab === 'login'));
+  });
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
 }
 
-function showMsg(id, type, text) {
-    const el = document.getElementById(id);
-    el.className = `msg ${type}`;
-    el.style.display = 'block';
-    el.textContent = text;
+function showMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.className = 'msg ' + type;
+  el.textContent = text;
 }
 
 async function doLogin() {
-    const btn      = document.getElementById('btn-login');
-    const email    = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
-
-    if (!email || !password) { showMsg('login-msg', 'error', 'Preencha email e senha.'); return; }
-
-    btn.disabled = true;
-    btn.textContent = 'Entrando...';
-
-    try {
-        const res  = await fetch('/api/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({email, password})
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-            showMsg('login-msg', 'error', data.error || 'Email ou senha incorretos.');
-            btn.disabled = false;
-            btn.textContent = 'Entrar →';
-            return;
-        }
-
-        btn.textContent = 'Abrindo Prontu...';
-        window.location.href = `/app?token=${data.session_token}`;
-
-    } catch(e) {
-        showMsg('login-msg', 'error', 'Erro de conexão. Tente novamente.');
-        btn.disabled = false;
-        btn.textContent = 'Entrar →';
-    }
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn      = document.getElementById('login-btn');
+  if (!email || !password) return showMsg('login-msg', 'Preencha email e senha.', 'error');
+  btn.disabled = true; btn.textContent = 'Entrando…';
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email, password})
+    });
+    const d = await r.json();
+    if (d.session_token) { window.location.href = '/app?token=' + d.session_token; }
+    else showMsg('login-msg', d.error || 'Erro ao entrar.', 'error');
+  } catch { showMsg('login-msg', 'Erro de conexão.', 'error'); }
+  btn.disabled = false; btn.textContent = 'Entrar →';
 }
 
 async function doRegister() {
-    const btn      = document.getElementById('btn-register');
-    const email    = document.getElementById('reg-email').value.trim();
-    const password = document.getElementById('reg-password').value;
-    const name     = document.getElementById('reg-name').value.trim();
-
-    if (!email || !password) { showMsg('reg-msg', 'error', 'Preencha email e senha.'); return; }
-
-    btn.disabled = true;
-    btn.textContent = 'Criando conta...';
-
-    try {
-        const res  = await fetch('/api/register', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({email, password, name})
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-            showMsg('reg-msg', 'error', data.error || 'Erro ao criar conta.');
-            btn.disabled = false;
-            btn.textContent = 'Criar conta →';
-            return;
-        }
-
-        btn.textContent = 'Abrindo Prontu...';
-        window.location.href = `/app?token=${data.session_token}`;
-
-    } catch(e) {
-        showMsg('reg-msg', 'error', 'Erro de conexão. Tente novamente.');
-        btn.disabled = false;
-        btn.textContent = 'Criar conta →';
-    }
+  const name     = document.getElementById('reg-name').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const btn      = document.getElementById('reg-btn');
+  if (!email || !password) return showMsg('register-msg', 'Preencha todos os campos.', 'error');
+  if (password.length < 6) return showMsg('register-msg', 'Senha deve ter mínimo 6 caracteres.', 'error');
+  btn.disabled = true; btn.textContent = 'Criando…';
+  try {
+    const r = await fetch('/api/register', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, email, password})
+    });
+    const d = await r.json();
+    if (d.session_token) { window.location.href = '/app?token=' + d.session_token; }
+    else showMsg('register-msg', d.error || 'Erro ao criar conta.', 'error');
+  } catch { showMsg('register-msg', 'Erro de conexão.', 'error'); }
+  btn.disabled = false; btn.textContent = 'Criar conta →';
 }
 
-fetch('/api/config').then(r => r.json()).then(cfg => {
-    if (cfg.contact_email) {
-        const link = document.getElementById('contact-link');
-        if (link) link.href = 'mailto:' + cfg.contact_email;
-    }
-}).catch(() => {});
-
 document.addEventListener('keydown', e => {
-    if (e.key !== 'Enter') return;
-    if (document.getElementById('panel-login').classList.contains('active')) doLogin();
-    else doRegister();
+  if (e.key !== 'Enter') return;
+  const active = document.querySelector('.tab-panel.active').id;
+  if (active === 'tab-login') doLogin(); else doRegister();
 });
 
-if (new URLSearchParams(window.location.search).get('tab') === 'register') showPanel('register');
+fetch('/api/config').then(r => r.json()).then(d => {
+  if (d.contact_email) {
+    document.getElementById('contact-line').innerHTML =
+      `Dúvidas? <a href="mailto:${d.contact_email}">${d.contact_email}</a>`;
+  }
+});
 </script>
 </body>
 </html>
