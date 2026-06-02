@@ -84,9 +84,32 @@ def init_db():
                 ip TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )""",
+            # IP access log — detecta compartilhamento de contas
+            """CREATE TABLE IF NOT EXISTS access_log (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                ip TEXT NOT NULL,
+                user_agent TEXT,
+                path TEXT,
+                created_at TEXT NOT NULL
+            )""",
+            # Planos/assinaturas (stub para uso futuro)
+            """CREATE TABLE IF NOT EXISTS subscriptions (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL UNIQUE,
+                plan TEXT NOT NULL DEFAULT 'free',
+                status TEXT NOT NULL DEFAULT 'active',
+                trial_ends_at TEXT,
+                expires_at TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )""",
             "CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)",
             "CREATE INDEX IF NOT EXISTS idx_sessions_uid ON sessions(user_id)",
             "CREATE INDEX IF NOT EXISTS idx_attempts_ip ON login_attempts(ip)",
+            "CREATE INDEX IF NOT EXISTS idx_access_user ON access_log(user_id)",
+            "CREATE INDEX IF NOT EXISTS idx_access_ip ON access_log(ip)",
+            "CREATE INDEX IF NOT EXISTS idx_subs_user ON subscriptions(user_id)",
         ]
         for stmt in statements:
             cur.execute(stmt)
@@ -110,9 +133,30 @@ def init_db():
                 ip TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS access_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                ip TEXT NOT NULL,
+                user_agent TEXT,
+                path TEXT,
+                created_at TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS subscriptions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL UNIQUE,
+                plan TEXT NOT NULL DEFAULT 'free',
+                status TEXT NOT NULL DEFAULT 'active',
+                trial_ends_at TEXT,
+                expires_at TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            );
             CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
             CREATE INDEX IF NOT EXISTS idx_sessions_uid ON sessions(user_id);
             CREATE INDEX IF NOT EXISTS idx_attempts_ip ON login_attempts(ip);
+            CREATE INDEX IF NOT EXISTS idx_access_user ON access_log(user_id);
+            CREATE INDEX IF NOT EXISTS idx_access_ip ON access_log(ip);
+            CREATE INDEX IF NOT EXISTS idx_subs_user ON subscriptions(user_id);
         """)
 
     conn.commit()
@@ -250,12 +294,128 @@ def rate_limit_clear(ip):
         conn.close()
 
 
+# ── Access Log (IP tracking para detectar compartilhamento) ──
+
+def log_access(user_id, ip, user_agent='', path='/app'):
+    conn = _conn()
+    try:
+        _run(conn, "INSERT INTO access_log (user_id, ip, user_agent, path, created_at) VALUES (?, ?, ?, ?, ?)",
+             (user_id, ip, user_agent[:512] if user_agent else '', path, _now()))
+        conn.commit()
+    except Exception:
+        pass
+    finally:
+        conn.close()
+
+
+def get_user_ips(user_id, days=30):
+    """Retorna lista de IPs únicos usados por um usuário nos últimos N dias."""
+    from datetime import timedelta
+    conn = _conn()
+    try:
+        since = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+        cur = _run(conn,
+            "SELECT ip, COUNT(*) as cnt, MAX(created_at) as last_seen "
+            "FROM access_log WHERE user_id=? AND created_at > ? "
+            "GROUP BY ip ORDER BY last_seen DESC",
+            (user_id, since))
+        return _all(cur)
+    finally:
+        conn.close()
+
+
+def get_suspicious_accounts(min_ips=3, days=7):
+    """
+    Retorna contas que usaram 3+ IPs distintos nos últimos N dias.
+    Indicativo de compartilhamento de conta.
+    """
+    from datetime import timedelta
+    conn = _conn()
+    try:
+        since = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+        cur = _run(conn,
+            "SELECT u.id, u.email, u.name, COUNT(DISTINCT a.ip) as distinct_ips, "
+            "MAX(a.created_at) as last_access "
+            "FROM users u JOIN access_log a ON u.id = a.user_id "
+            "WHERE a.created_at > ? "
+            "GROUP BY u.id, u.email, u.name "
+            "HAVING COUNT(DISTINCT a.ip) >= ? "
+            "ORDER BY distinct_ips DESC",
+            (since, min_ips))
+        return _all(cur)
+    except Exception:
+        return []
+    finally:
+        conn.close()
+
+
+# ── Assinaturas (stub para uso futuro) ───────────────────────
+
+def get_subscription(user_id):
+    conn = _conn()
+    try:
+        cur = _run(conn, "SELECT * FROM subscriptions WHERE user_id = ?", (user_id,))
+        return _one(cur)
+    finally:
+        conn.close()
+
+
+def create_free_subscription(user_id, trial_days=30):
+    """Cria assinatura gratuita com período de trial."""
+    from datetime import timedelta
+    conn = _conn()
+    try:
+        now = _now()
+        trial_ends = (datetime.now(timezone.utc) + timedelta(days=trial_days)).isoformat()
+        if USE_PG:
+            _run(conn,
+                """INSERT INTO subscriptions (user_id, plan, status, trial_ends_at, created_at, updated_at)
+                   VALUES (?, 'free', 'trial', ?, ?, ?)
+                   ON CONFLICT (user_id) DO NOTHING""",
+                (user_id, trial_ends, now, now))
+        else:
+            _run(conn,
+                """INSERT OR IGNORE INTO subscriptions
+                   (user_id, plan, status, trial_ends_at, created_at, updated_at)
+                   VALUES (?, 'free', 'trial', ?, ?, ?)""",
+                (user_id, trial_ends, now, now))
+        conn.commit()
+    except Exception:
+        conn.rollback()
+    finally:
+        conn.close()
+
+
+def is_subscription_active(user_id):
+    """
+    Verifica se a assinatura está ativa.
+    Por enquanto sempre retorna True (período gratuito).
+    Quando ativar cobranças, descomentar a lógica abaixo.
+    """
+    # STUB: sempre ativo enquanto não ativar cobranças
+    return True
+
+    # -- Lógica futura --
+    # sub = get_subscription(user_id)
+    # if not sub:
+    #     return False
+    # if sub['status'] == 'active':
+    #     if sub['expires_at'] and sub['expires_at'] < _now():
+    #         return False
+    #     return True
+    # if sub['status'] == 'trial':
+    #     return sub['trial_ends_at'] > _now()
+    # return False
+
+
 # ── Admin ─────────────────────────────────────────────────────
 
 def delete_user(user_id):
     conn = _conn()
     try:
         _run(conn, "DELETE FROM sessions WHERE user_id = ?", (user_id,))
+        _run(conn, "DELETE FROM access_log WHERE user_id = ?", (user_id,))
+        _run(conn, "DELETE FROM subscriptions WHERE user_id = ?", (user_id,))
         _run(conn, "DELETE FROM users WHERE id = ?", (user_id,))
         conn.commit()
     finally:

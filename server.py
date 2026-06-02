@@ -9,8 +9,10 @@ Rotas:
   POST /api/register  → Cadastra usuário
   POST /api/login     → Login → retorna token de sessão
   POST /api/logout    → Invalida sessão
-  GET  /api/admin/users   → Lista usuários (requer X-Admin-Token)
-  POST /api/admin/delete/<id> → Remove usuário (requer X-Admin-Token)
+  GET  /api/admin/users        → Lista usuários (requer X-Admin-Token)
+  POST /api/admin/delete/<id>  → Remove usuário (requer X-Admin-Token)
+  GET  /api/admin/suspicious   → Contas com múltiplos IPs (requer X-Admin-Token)
+  GET  /api/admin/user-ips/<id>→ IPs de um usuário (requer X-Admin-Token)
 """
 
 import os
@@ -30,7 +32,9 @@ from flask_cors import CORS
 from database import (
     init_db, create_user, get_user_by_email, get_user_by_id, get_all_users,
     create_session, get_session, delete_session, delete_user_sessions,
-    rate_limit_check, rate_limit_record, rate_limit_clear, delete_user
+    rate_limit_check, rate_limit_record, rate_limit_clear, delete_user,
+    log_access, get_user_ips, get_suspicious_accounts,
+    create_free_subscription, is_subscription_active
 )
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
@@ -140,6 +144,12 @@ def app_page():
         html_content = f.read()
 
     user = get_user_by_id(session['user_id'])
+
+    # Registra acesso para detecção de compartilhamento de conta
+    client_ip = _get_client_ip()
+    user_agent = request.headers.get('User-Agent', '')
+    log_access(session['user_id'], client_ip, user_agent, '/app')
+
     user_info = {
         'email':         user['email'] if user else '',
         'name':          user['name'] if user else '',
@@ -189,6 +199,8 @@ def api_register():
         return jsonify({'error': 'Este email já está cadastrado'}), 409
 
     token = _make_session_token(user['id'])
+    # Cria assinatura gratuita (trial 30 dias — stub para uso futuro)
+    create_free_subscription(user['id'])
     logger.info(f"[REGISTER] Novo usuário: {_mask_email(email)}")
 
     return jsonify({
@@ -251,6 +263,40 @@ def api_admin_delete(user_id):
     delete_user(user_id)
     logger.warning(f"[ADMIN] Usuário removido: id={user_id}")
     return jsonify({'success': True})
+
+
+@app.route('/api/admin/suspicious')
+@admin_required
+def api_admin_suspicious():
+    """
+    Lista contas com comportamento suspeito de compartilhamento.
+    Parâmetros:
+      ?min_ips=3  — mínimo de IPs distintos (padrão: 3)
+      ?days=7     — janela de dias (padrão: 7)
+    """
+    min_ips = int(request.args.get('min_ips', 3))
+    days    = int(request.args.get('days', 7))
+    results = get_suspicious_accounts(min_ips=min_ips, days=days)
+    return jsonify({
+        'count': len(results),
+        'params': {'min_ips': min_ips, 'days': days},
+        'accounts': results,
+    })
+
+
+@app.route('/api/admin/user-ips/<int:user_id>')
+@admin_required
+def api_admin_user_ips(user_id):
+    """Retorna histórico de IPs de um usuário específico."""
+    days = int(request.args.get('days', 30))
+    ips  = get_user_ips(user_id, days=days)
+    user = get_user_by_id(user_id)
+    return jsonify({
+        'user': {'id': user_id, 'email': user['email'] if user else None},
+        'days': days,
+        'distinct_ips': len(ips),
+        'ips': ips,
+    })
 
 
 # ─── Init ─────────────────────────────────────────────────────

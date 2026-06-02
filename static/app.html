@@ -13,25 +13,25 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #f0f2f8;
-            color: #1a2744;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f0f9ff;
+            color: #0c4a6e;
+            padding: 24px 20px;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(15,23,42,0.07);
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(14,165,233,0.08);
             padding: 30px;
             transition: max-width 0.25s ease;
         }
 
         /* Modo largo — ativo apenas no módulo de prontuário */
         .container.wide {
-            max-width: 1400px;
+            max-width: 1700px;
         }
         
         h1 {
@@ -172,8 +172,8 @@
             display: none;
             margin-top: 20px;
             padding: 16px;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
             border-radius: 6px;
         }
         
@@ -212,8 +212,8 @@
         }
         
         .tab-btn.active {
-            color: #4f46e5;
-            border-bottom-color: #4f46e5;
+            color: #0ea5e9;
+            border-bottom-color: #0ea5e9;
         }
         
         .tab-content {
@@ -281,8 +281,8 @@
         .revision-item {
             padding: 12px;
             margin-bottom: 12px;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
             border-radius: 6px;
             display: flex;
             justify-content: space-between;
@@ -322,9 +322,9 @@
             padding: 24px 16px;
             font-size: 16px;
             font-weight: bold;
-            border: 2px solid #4f46e5;
+            border: 2px solid #0ea5e9;
             background: white;
-            color: #4f46e5;
+            color: #0ea5e9;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
@@ -337,7 +337,7 @@
         }
 
         .btn-categoria:hover {
-            background: #4f46e5;
+            background: #0ea5e9;
             color: white;
         }
 
@@ -357,22 +357,22 @@
 
         .btn-modelo:hover {
             background: #f0f0f0;
-            border-color: #4f46e5;
-            box-shadow: 0 2px 8px rgba(79,70,229,0.2);
+            border-color: #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14,165,233,0.2);
         }
 
         .btn-secondary {
             padding: 10px 16px;
-            background: #6c757d;
+            background: #0369a1;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
         }
 
         .btn-secondary:hover {
-            background: #5a6268;
+            background: #0284c7;
         }
 
         /* ── MENU CARDS (home page) ─────────────────── */
@@ -402,8 +402,8 @@
             align-items: center;
             text-align: center;
             padding: 22px 14px 18px;
-            border: 2px solid #e8e8e8;
-            border-radius: 14px;
+            border: 1.5px solid #e0f2fe;
+            border-radius: 12px;
             background: white;
             cursor: pointer;
             transition: all 0.18s ease;
@@ -412,10 +412,10 @@
             font-family: inherit;
         }
         .menu-card:hover {
-            border-color: #4f46e5;
-            background: #f5f3ff;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(79,70,229,0.13);
+            border-color: #0ea5e9;
+            background: #f0f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(14,165,233,0.15);
         }
         .menu-card.secondary-card:hover {
             border-color: #888;
@@ -466,7 +466,7 @@
             background: #fafafa;
             width: 100%;
         }
-        .gas-input-group input:focus { border-color: #4f46e5; background: white; }
+        .gas-input-group input:focus { border-color: #0ea5e9; background: white; }
         .gas-timing-row { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
         .gas-timing-row input[type="radio"] { display: none; }
         .gas-timing-row label {
@@ -479,15 +479,15 @@
             transition: all 0.15s;
         }
         .gas-timing-row input[type="radio"]:checked + label {
-            border-color: #4f46e5;
-            background: #ede9fe;
-            color: #4f46e5;
+            border-color: #0ea5e9;
+            background: #e0f2fe;
+            color: #0ea5e9;
             font-weight: 600;
         }
         .gas-btn-analyze {
             width: 100%;
             padding: 13px;
-            background: #1a2744;
+            background: #0ea5e9;
             color: white;
             border: none;
             border-radius: 8px;
@@ -523,7 +523,7 @@
             border: 2px solid #e0e0e0;
         }
         .gas-ph-banner.acidemia { background: #fff3f3; border-color: #ef9a9a; }
-        .gas-ph-banner.alcalemia { background: #ede9fe; border-color: #90caf9; }
+        .gas-ph-banner.alcalemia { background: #e0f2fe; border-color: #90caf9; }
         .gas-ph-banner.normal { background: #e8f5e9; border-color: #a5d6a7; }
         .gas-ph-num { font-size: 36px; font-weight: 800; font-family: 'Courier New', monospace; color: #1a1a2e; }
         .gas-ph-status { font-size: 15px; font-weight: 700; color: #333; }
@@ -568,13 +568,13 @@
         .tb-toast.success { background: #2e7d32; }
         .tb-toast.error   { background: #c62828; }
         .tb-toast.warning { background: #e65100; }
-        .tb-toast.info    { background: #1a2744; }
+        .tb-toast.info    { background: #0ea5e9; }
         @keyframes tbToastIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
         /* ── MENU DE CONTA ───────────────────────────────────── */
         #tb-account-btn {
             position: fixed; top: 14px; right: 14px; z-index: 9999;
-            background: #4f46e5; color: white; border: none;
+            background: #0ea5e9; color: white; border: none;
             width: 38px; height: 38px; border-radius: 50%;
             font-size: 16px; cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
@@ -606,10 +606,10 @@
             font-size: 13px; cursor: pointer; color: #444;
             text-decoration: none;
         }
-        .tb-acc-link:hover { color: #4f46e5; }
+        .tb-acc-link:hover { color: #0ea5e9; }
         .tb-acc-renew {
             display: block; width: 100%; text-align: center;
-            background: #4f46e5; color: white; border: none;
+            background: #0ea5e9; color: white; border: none;
             padding: 9px; border-radius: 7px; font-size: 13px;
             font-weight: 600; cursor: pointer; text-decoration: none;
             margin-top: 4px;
@@ -626,11 +626,11 @@
     
     <div class="container">
         <!-- MASCOTE TRIPA BOT -->
-        <div style="text-align: center; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid #f0f2f8;">
+        <div style="text-align: center; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid #e0f2fe;">
             <img src="/logo.png" alt="Prontu" style="width: 80px; height: auto; display: inline-block; margin-bottom: 8px;" />
-            <p style="text-align: center; font-size: 28px; font-weight: 700; color: #1a2744; margin: 0 0 4px 0; letter-spacing: -0.5px;">Prontu</p>
-            <p style="text-align: center; color: #64748b; margin: 0; font-size: 13px;">Assistente médico para residentes</p>
-            <p style="text-align: center; color: #94a3b8; margin: 4px 0 0 0; font-size: 11px;">Sistema de Padronização Médica &nbsp;·&nbsp; <span id="app-version" style="color:#4f46e5;font-weight:600;">v1.0.0</span></p>
+            <p style="text-align: center; font-size: 26px; font-weight: 700; color: #0c4a6e; margin: 0 0 4px 0; letter-spacing: -0.5px;">Prontu</p>
+            <p style="text-align: center; color: #7dd3fc; margin: 0; font-size: 13px;">Assistente médico para residentes</p>
+            <p style="text-align: center; color: #94a3b8; margin: 4px 0 0 0; font-size: 11px;">Sistema de Padronização Médica &nbsp;·&nbsp; <span id="app-version" style="color:#38bdf8;font-weight:600;">v1.0.0</span></p>
         </div>
         
         <!-- MENU INICIAL -->
@@ -641,32 +641,32 @@
             </div>
             <div class="menu-grid">
                 <button id="btn-exames" class="menu-card" onclick="mostrarModulo('modulo-exames'); return false;">
-                    <span class="card-emoji">🔬</span>
+                    <span class="card-emoji">🧪</span>
                     <span class="card-title">Processar Exames</span>
                     <span class="card-desc">Organiza e estrutura resultados laboratoriais</span>
                 </button>
                 <button id="btn-prontuario" class="menu-card" onclick="mostrarModulo('modulo-prontuario'); return false;">
-                    <span class="card-emoji">📋</span>
+                    <span class="card-emoji">🗂️</span>
                     <span class="card-title">Ajustar Prontuário</span>
                     <span class="card-desc">Reorganiza e estrutura o prontuário de forma padronizada</span>
                 </button>
                 <button id="btn-evolucao" class="menu-card" onclick="mostrarModulo('modulo-evolucao'); return false;">
-                    <span class="card-emoji">📝</span>
+                    <span class="card-emoji">📈</span>
                     <span class="card-title">Evolução Médica</span>
                     <span class="card-desc">Gera evolução clínica com sinais vitais, BH e condutas</span>
                 </button>
                 <button id="btn-gasometria" class="menu-card" onclick="mostrarModulo('modulo-gasometria'); return false;">
-                    <span class="card-emoji">🫁</span>
+                    <span class="card-emoji">⚗️</span>
                     <span class="card-title">Gasometria</span>
                     <span class="card-desc">Análise ácido-base com compensações, AG e Delta-Delta</span>
                 </button>
                 <button id="btn-receitas" class="menu-card" onclick="mostrarModulo('modulo-receitas'); return false;">
-                    <span class="card-emoji">💊</span>
+                    <span class="card-emoji">🩺</span>
                     <span class="card-title">Receita Médica</span>
                     <span class="card-desc">Gera receitas formatadas de forma padronizada</span>
                 </button>
                 <button id="btn-modelos" class="menu-card" onclick="mostrarModulo('modulo-modelos'); return false;">
-                    <span class="card-emoji">📚</span>
+                    <span class="card-emoji">🗃️</span>
                     <span class="card-title">Ver Modelos</span>
                     <span class="card-desc">Modelos customizáveis de procedimentos, pedidos e receitas</span>
                 </button>            </div>
@@ -737,10 +737,10 @@
                 <!-- COLUNA DIREITA: Resultado Estruturado -->
                 <div id="resultado-prontuario" style="flex: 1; min-width: 0; display: none; flex-direction: column;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                        <span style="font-weight: 600; font-size: 13px; color: #4f46e5;">Resultado Estruturado</span>
+                        <span style="font-weight: 600; font-size: 13px; color: #0ea5e9;">Resultado Estruturado</span>
                         <button class="btn-copy" onclick="copiarProntuario()" style="margin: 0; font-size: 11px; padding: 3px 10px;">Copiar</button>
                     </div>
-                    <textarea id="output-prontuario" readonly style="flex: 1; min-height: 480px; padding: 12px; border: 2px solid #4f46e5; border-radius: 6px; font-family: monospace; font-size: 12px; resize: vertical; line-height: 1.5; background: #f8f9ff;"></textarea>
+                    <textarea id="output-prontuario" readonly style="flex: 1; min-height: 480px; padding: 12px; border: 2px solid #0ea5e9; border-radius: 6px; font-family: monospace; font-size: 12px; resize: vertical; line-height: 1.5; background: #f8f9ff;"></textarea>
                 </div>
 
             </div>
@@ -1037,8 +1037,8 @@
             <textarea id="conteudo-modelo" readonly style="width: 100%; height: 500px; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 12px;"></textarea>
 
             <!-- CALCULADORA DE INSULINA (escondida por padrão) -->
-            <div id="insulina-calculadora-wrapper" style="display: none; background: #f5f5f5; padding: 20px; border-radius: 8px; border: 2px solid #4f46e5;">
-                <h3 style="margin-top: 0; color: #4f46e5;">💉 Calculadora de Insulina</h3>
+            <div id="insulina-calculadora-wrapper" style="display: none; background: #f5f5f5; padding: 20px; border-radius: 8px; border: 2px solid #0ea5e9;">
+                <h3 style="margin-top: 0; color: #0ea5e9;">💉 Calculadora de Insulina</h3>
                 <p style="color: #666; font-size: 13px; margin-bottom: 16px;">
                     Selecione os tipos utilizados e informe as doses. 1 caneta = 300 UI (3 mL × 100 UI/mL).
                 </p>
@@ -1065,7 +1065,7 @@
                                 <input type="number" id="regular-jantar" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
                             </div>
                         </div>
-                        <div id="resumo-regular" style="margin-top: 8px; font-size: 12px; color: #4f46e5; font-weight: bold;"></div>
+                        <div id="resumo-regular" style="margin-top: 8px; font-size: 12px; color: #0ea5e9; font-weight: bold;"></div>
                     </div>
                 </div>
 
@@ -1087,7 +1087,7 @@
                                 <input type="number" id="nph-noite" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
                             </div>
                         </div>
-                        <div id="resumo-nph" style="margin-top: 8px; font-size: 12px; color: #4f46e5; font-weight: bold;"></div>
+                        <div id="resumo-nph" style="margin-top: 8px; font-size: 12px; color: #0ea5e9; font-weight: bold;"></div>
                     </div>
                 </div>
 
@@ -1103,7 +1103,7 @@
                             <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Dose única diária (UI)</label>
                             <input type="number" id="glargina-dose" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
                         </div>
-                        <div id="resumo-glargina" style="margin-top: 8px; font-size: 12px; color: #4f46e5; font-weight: bold;"></div>
+                        <div id="resumo-glargina" style="margin-top: 8px; font-size: 12px; color: #0ea5e9; font-weight: bold;"></div>
                     </div>
                 </div>
 
@@ -1137,13 +1137,13 @@
                                 <input type="number" id="analogo-jantar" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
                             </div>
                         </div>
-                        <div id="resumo-analogo" style="margin-top: 8px; font-size: 12px; color: #4f46e5; font-weight: bold;"></div>
+                        <div id="resumo-analogo" style="margin-top: 8px; font-size: 12px; color: #0ea5e9; font-weight: bold;"></div>
                     </div>
                 </div>
 
                 <!-- RESUMO GERAL -->
-                <div id="resumo-geral-insulina" style="display: none; background: #ede9fe; padding: 14px; border-radius: 6px; border-left: 4px solid #4f46e5; margin-bottom: 16px;">
-                    <div style="font-weight: bold; color: #4f46e5; margin-bottom: 6px;">Resumo do esquema</div>
+                <div id="resumo-geral-insulina" style="display: none; background: #e0f2fe; padding: 14px; border-radius: 6px; border-left: 4px solid #0ea5e9; margin-bottom: 16px;">
+                    <div style="font-weight: bold; color: #0ea5e9; margin-bottom: 6px;">Resumo do esquema</div>
                     <div id="resumo-geral-texto" style="font-size: 13px; color: #333; line-height: 1.9;"></div>
                 </div>
 
@@ -2929,7 +2929,7 @@ Responsavel: ___________________________  Data/Hora: ___/___/___  ___h___`
                     btnNovoExistente = document.createElement('button');
                     btnNovoExistente.id = 'btn-criar-novo-modelo';
                     btnNovoExistente.className = 'btn-secondary';
-                    btnNovoExistente.style.cssText = 'margin-top: 16px; width: 100%; background-color: #4f46e5; color: white; font-weight: bold;';
+                    btnNovoExistente.style.cssText = 'margin-top: 16px; width: 100%; background-color: #0ea5e9; color: white; font-weight: bold;';
                     btnNovoExistente.innerHTML = '➕ Criar Meu Próprio Modelo';
                     btnNovoExistente.onclick = () => abrirTelaNovoModelo();
                     gridModelos.parentNode.appendChild(btnNovoExistente);
@@ -3602,7 +3602,7 @@ SINAIS DE ALERTA:
               <hr class="tb-acc-divider">
               ${contact ? `<a class="tb-acc-link" href="mailto:${contact}">&#9993; Suporte: ${contact}</a>` : ''}
               <hr class="tb-acc-divider">
-              <button class="tb-acc-link" onclick="fazerLogout()" style="cursor:pointer;color:#4f46e5;">&#128682; Sair</button>
+              <button class="tb-acc-link" onclick="fazerLogout()" style="cursor:pointer;color:#0ea5e9;">&#128682; Sair</button>
             `;
             document.body.appendChild(panel);
 
