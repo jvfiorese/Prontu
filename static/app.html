@@ -616,6 +616,7 @@
         .tb-acc-renew:hover { background: #c94444; }
         .tb-acc-version { font-size: 10px; color: #ccc; text-align: center; margin-top: 10px; }
         </style>
+<script src="/exames-tiaju.js"></script>
 </head>
 <body>
 
@@ -1677,7 +1678,7 @@
             const output = document.getElementById('output-exames');
 
             if (!input) {
-                aviso.textContent = '⚠️ Por favor, cole o texto dos exames';
+                aviso.textContent = '⚠️ Cole o texto dos exames (Ctrl+A → Ctrl+C no PDF, depois Ctrl+V aqui)';
                 aviso.classList.add('show');
                 resultado.classList.remove('show');
                 return;
@@ -1692,14 +1693,20 @@
 
             aviso.classList.remove('show');
 
-            const parser = new ExamParser();
-            const result = parser.parse(input);
-            const allExams = [...result.auto, ...result.needsReview, ...result.unmatched];
-
-            if (result.needsReview.length > 0) {
-                mostrarModalRevisao(result.needsReview, result.auto, result.unmatched);
+            // Usa o parser Tia Ju se disponível, senão cai no parser antigo
+            if (typeof window.parsearExamesTiaJu === 'function') {
+                const texto = window.parsearExamesTiaJu(input);
+                if (output) output.textContent = texto;
+                if (resultado) resultado.classList.add('show');
             } else {
-                exibirResultadoExames(allExams, output, resultado);
+                const parser = new ExamParser();
+                const result = parser.parse(input);
+                const allExams = [...result.auto, ...result.needsReview, ...result.unmatched];
+                if (result.needsReview.length > 0) {
+                    mostrarModalRevisao(result.needsReview, result.auto, result.unmatched);
+                } else {
+                    exibirResultadoExames(allExams, output, resultado);
+                }
             }
         }
 
