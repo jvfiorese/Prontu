@@ -3579,13 +3579,23 @@ SINAIS DE ALERTA:
         // Veja os botões HTML para o ponto de entrada
     
         // ======================================================
-        // SISTEMA DE LICENÇA RESIDENTEAI v2.0 — ONLINE ONLY
+        // ── SISTEMA DE CONTA ─────────────────────────────────────
+
+        // Escape HTML para evitar XSS ao injetar dados do usuário no DOM
+        function _esc(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
 
         function tbInitAccountMenu() {
-            const info = window.__USER_INFO__ || {};
-            const email = info.email || '';
-            const contact = info.contact_email || '';
-            const version = info.version || '';
+            const info    = window.__USER_INFO__ || {};
+            const email   = _esc(info.email   || '');
+            const contact = _esc(info.contact_email || '');
+            const version = _esc(info.version || '');
             const sessionToken = info.session_token || '';
 
             const btn = document.createElement('button');
