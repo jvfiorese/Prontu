@@ -32,7 +32,7 @@
 
   // ════════════════════════════════════════════════════════════════
   // DICIONÁRIO DE EXAMES
-  // Cada entrada: { abbr, grupo, min, max }
+  // Cada entrada: { abbr, grupo }
   // grupo: hemo | pcr | hep | prot | renal | eletro | outros |
   //        tir | glic | lip | vit | ferro | soro | eas | gaso
   // ════════════════════════════════════════════════════════════════
@@ -46,111 +46,111 @@
   }
 
   // ── HEMOGRAMA ────────────────────────────────────────────────────
-  def(['hemoglobina','hgb','hb ','hb:'],                     'HB',    'hemo', 12,   16);
-  def(['hematocrito','ht ','ht:','htc'],                      'HT',    'hemo', 36,   48);
-  def(['eritrocitos','hemacias','rbc','eritrócitos','hemácias'], 'Hm', 'hemo', 4.0,  5.9);
-  def(['leucocitos','leucocitos totais','leuco','wbc','gb'],  'Leuco', 'hemo', 4000, 11000);
-  def(['neutrofilos','neutrófilos','segmentados','seg ','seg:'], 'Seg','hemo_dif', 45, 70);
-  def(['bastonetes','basto ','bastoes','bastões'],             'Basto','hemo_dif', 0,  5);
-  def(['linfocitos','linfócitos','linf ','linf:'],             'Linf', 'hemo_dif', 20, 45);
-  def(['monocitos','monócitos','mono ','mono:'],               'Mono', 'hemo_dif', 2,  10);
-  def(['eosinofilos','eosinófilos','eo ','eo:','eosino'],      'Eo',  'hemo_dif', 1,   5);
-  def(['basofilos','basófilos','baso ','baso:'],               'Baso','hemo_dif', 0,   2);
-  def(['plaquetas','pqt','plt','plaquetas '],                  'PQT', 'hemo', 150000, 400000);
-  def(['vpm','volume plaquetario medio','volume plaquetário médio'], 'VPM', 'hemo', 7, 12);
-  def(['rdw'],                                                 'RDW', 'hemo', 11, 15);
-  def(['vcm','volume corpuscular medio'],                      'VCM', 'hemo', 80, 100);
-  def(['hcm','hemoglobina corpuscular media'],                 'HCM', 'hemo', 27, 33);
-  def(['chcm'],                                                'CHCM','hemo', 32, 36);
-  def(['reticulocitos','reticulócitos','retic'],               'Retic','hemo', 0.5, 1.5);
+  def(['hemoglobina','hgb','hb ','hb:'],                     'HB',    'hemo');
+  def(['hematocrito','ht ','ht:','htc'],                      'HT',    'hemo');
+  def(['eritrocitos','hemacias','rbc','eritrócitos','hemácias'], 'Hm', 'hemo');
+  def(['leucocitos','leucocitos totais','leuco','wbc','gb'],  'Leuco', 'hemo');
+  def(['neutrofilos','neutrófilos','segmentados','seg ','seg:'], 'Seg','hemo_dif');
+  def(['bastonetes','basto ','bastoes','bastões'],             'Basto','hemo_dif');
+  def(['linfocitos','linfócitos','linf ','linf:'],             'Linf', 'hemo_dif');
+  def(['monocitos','monócitos','mono ','mono:'],               'Mono', 'hemo_dif');
+  def(['eosinofilos','eosinófilos','eo ','eo:','eosino'],      'Eo',  'hemo_dif');
+  def(['basofilos','basófilos','baso ','baso:'],               'Baso','hemo_dif');
+  def(['plaquetas','pqt','plt','plaquetas '],                  'PQT', 'hemo');
+  def(['vpm','volume plaquetario medio','volume plaquetário médio'], 'VPM', 'hemo');
+  def(['rdw'],                                                 'RDW', 'hemo');
+  def(['vcm','volume corpuscular medio'],                      'VCM', 'hemo');
+  def(['hcm','hemoglobina corpuscular media'],                 'HCM', 'hemo');
+  def(['chcm'],                                                'CHCM','hemo');
+  def(['reticulocitos','reticulócitos','retic'],               'Retic','hemo');
 
   // ── PCR / INFLAMAÇÃO ──────────────────────────────────────────────
-  def(['pcr','proteina c reativa','proteína c reativa','proteina c-reativa','pcr hs','pcr ultrassensivel'], 'PCR', 'pcr', 0, 0.5);
-  def(['procalcitonina','pct ','pct:'],                        'PCT', 'pcr', 0, 0.05);
+  def(['pcr','proteina c reativa','proteína c reativa','proteina c-reativa','pcr hs','pcr ultrassensivel'], 'PCR', 'pcr');
+  def(['procalcitonina','pct ','pct:'],                        'PCT', 'pcr');
 
   // ── HEPATICO ─────────────────────────────────────────────────────
-  def(['tgo','ast ','ast:','aspartato aminotransferase','transaminase oxalacetica','transaminase oxaloacética'], 'TGO', 'hep', 0, 40);
-  def(['tgp','alt ','alt:','alanina aminotransferase','transaminase piruvica','transaminase pirúvica'],          'TGP', 'hep', 0, 41);
-  def(['fosfatase alcalina','fa ','fa:','alkaline phosphatase'],  'FA',  'hep', 40,  130);
-  def(['ggt','gamaglutamiltransferase','gama gt','gamma gt','gama-gt','ggtp','γgt'], 'GGT', 'hep', 0, 61);
-  def(['bilirrubina total','bt ','bt:','bilirrubinas totais'],  'BT',  'hep', 0, 1.0);
-  def(['bilirrubina direta','bd ','bd:','bilirrubina conjugada','bilirrubina d:'], 'BD', 'hep', 0, 0.3);
-  def(['bilirrubina indireta','bi ','bi:','bilirrubina livre','bilirrubina i:'],    'BI', 'hep', 0, 0.8);
-  def(['inr','rni','razao normalizada internacional','relacao normalizada internacional'], 'INR', 'hep', 0.8, 1.2);
-  def(['ttpa','tempo de tromboplastina parcial ativado','aptt','ptt ','ptt:'], 'TTPA', 'hep', 25, 35);
-  def(['tp ','tp:','tempo de protrombina'],                    'TP',  'hep', null, null);
-  def(['fibrinogenio','fibrinogênio'],                         'Fibrinogênio', 'hep', 200, 400);
+  def(['tgo','ast ','ast:','aspartato aminotransferase','transaminase oxalacetica','transaminase oxaloacética'], 'TGO', 'hep');
+  def(['tgp','alt ','alt:','alanina aminotransferase','transaminase piruvica','transaminase pirúvica'],          'TGP', 'hep');
+  def(['fosfatase alcalina','fa ','fa:','alkaline phosphatase'],  'FA',  'hep');
+  def(['ggt','gamaglutamiltransferase','gama gt','gamma gt','gama-gt','ggtp','γgt'], 'GGT', 'hep');
+  def(['bilirrubina total','bt ','bt:','bilirrubinas totais'],  'BT',  'hep');
+  def(['bilirrubina direta','bd ','bd:','bilirrubina conjugada','bilirrubina d:'], 'BD', 'hep');
+  def(['bilirrubina indireta','bi ','bi:','bilirrubina livre','bilirrubina i:'],    'BI', 'hep');
+  def(['inr','rni','razao normalizada internacional','relacao normalizada internacional'], 'INR', 'hep');
+  def(['ttpa','tempo de tromboplastina parcial ativado','aptt','ptt ','ptt:'], 'TTPA', 'hep');
+  def(['tp ','tp:','tempo de protrombina'],                    'TP',  'hep');
+  def(['fibrinogenio','fibrinogênio'],                         'Fibrinogênio', 'hep');
 
   // ── PROTEÍNAS ────────────────────────────────────────────────────
-  def(['proteinas totais','proteínas totais','pt:','ptn totais','prot totais'], 'PT',   'prot', 6.0, 8.0);
-  def(['albumina ','albumina:','alb ','alb:'],                 'ALB', 'prot', 3.5, 5.0);
-  def(['globulinas','globulina ','glob ','glob:'],              'GLOB','prot', 2.0, 3.5);
-  def(['relacao ag','relação a/g','relação ag','razao ag','a/g ratio'], 'A/G', 'prot', 1.0, 2.5);
+  def(['proteinas totais','proteínas totais','pt:','ptn totais','prot totais'], 'PT',   'prot');
+  def(['albumina ','albumina:','alb ','alb:'],                 'ALB', 'prot');
+  def(['globulinas','globulina ','glob ','glob:'],              'GLOB','prot');
+  def(['relacao ag','relação a/g','relação ag','razao ag','a/g ratio'], 'A/G', 'prot');
 
   // ── RENAL ────────────────────────────────────────────────────────
-  def(['ureia','uréia','ur ','ur:','nitrogenio ureico','bun'],  'Ur',  'renal', 10,  50);
-  def(['creatinina ','creatinina:','cr ','cr:','crea'],         'Cr',  'renal', 0.5, 1.2);
-  def(['tfg','taxa de filtracao glomerular','egfr','clearance estimado','tfg ckd'], 'TFG', 'renal', 60, 999);
-  def(['depuracao de creatinina','clearance de creatinina','depuracao creatinina'], 'DepCr', 'renal', 80, 120);
-  def(['acido urico','ácido úrico','uricemia','urato'],         'ÁcÚrico', 'renal', 2.4, 6.0);
+  def(['ureia','uréia','ur ','ur:','nitrogenio ureico','bun'],  'Ur',  'renal');
+  def(['creatinina ','creatinina:','cr ','cr:','crea'],         'Cr',  'renal');
+  def(['tfg','taxa de filtracao glomerular','egfr','clearance estimado','tfg ckd'], 'TFG', 'renal');
+  def(['depuracao de creatinina','clearance de creatinina','depuracao creatinina'], 'DepCr', 'renal');
+  def(['acido urico','ácido úrico','uricemia','urato'],         'ÁcÚrico', 'renal');
 
   // ── ELETRÓLITOS ──────────────────────────────────────────────────
-  def(['sodio','sódio','na ','na:'],                            'Na', 'eletro', 136, 145);
-  def(['potassio','potássio','k ','k:'],                        'K',  'eletro', 3.5, 5.0);
-  def(['cloro','cloreto','cl ','cl:'],                          'Cl', 'eletro', 98, 106);
-  def(['calcio total','cálcio total','calcio serico','ca total','ca:','ca '], 'Ca', 'eletro', 8.5, 10.5);
-  def(['fosforo','fósforo','fosfato','p ','p:'],                'P',  'eletro', 2.5, 4.5);
-  def(['magnesio','magnésio','mg ','mg:'],                      'Mg', 'eletro', 1.5, 2.5);
-  def(['bicarbonato','hco3','co2 total'],                       'HCO3','eletro', 22, 29);
-  def(['lactato','acido lactico','ácido lático'],               'Lactato','eletro', 0.5, 2.0);
+  def(['sodio','sódio','na ','na:'],                            'Na', 'eletro');
+  def(['potassio','potássio','k ','k:'],                        'K',  'eletro');
+  def(['cloro','cloreto','cl ','cl:'],                          'Cl', 'eletro');
+  def(['calcio total','cálcio total','calcio serico','ca total','ca:','ca '], 'Ca', 'eletro');
+  def(['fosforo','fósforo','fosfato','p ','p:'],                'P',  'eletro');
+  def(['magnesio','magnésio','mg ','mg:'],                      'Mg', 'eletro');
+  def(['bicarbonato','hco3','co2 total'],                       'HCO3','eletro');
+  def(['lactato','acido lactico','ácido lático'],               'Lactato','eletro');
 
   // ── OUTROS LABORATORIAIS ─────────────────────────────────────────
-  def(['dhl','ldh','desidrogenase latica','desidrogenase lática','lactato desidrogenase'], 'DHL', 'outros', 120, 246);
-  def(['cpk','ck total','creatino quinase','creatinofosfoquinase','ck ','ck:'],            'CPK', 'outros', 24, 170);
-  def(['vhs','velocidade de hemossedimentacao','velocidade hemossedimentacao','velocidade de eritrossedimentacao'], 'VHS', 'outros', 0, 20);
-  def(['troponina i','troponina t','troponina hs','troponina ','trop '],                   'Troponina', 'outros', 0, 0.04);
-  def(['bnp','nt-probnp','nt probnp','pro bnp'],                'BNP', 'outros', 0, 125);
-  def(['amilase ','amilase:'],                                  'Amilase','outros', 25, 125);
-  def(['lipase ','lipase:'],                                    'Lipase','outros', 0, 60);
+  def(['dhl','ldh','desidrogenase latica','desidrogenase lática','lactato desidrogenase'], 'DHL', 'outros');
+  def(['cpk','ck total','creatino quinase','creatinofosfoquinase','ck ','ck:'],            'CPK', 'outros');
+  def(['vhs','velocidade de hemossedimentacao','velocidade hemossedimentacao','velocidade de eritrossedimentacao'], 'VHS', 'outros');
+  def(['troponina i','troponina t','troponina hs','troponina ','trop '],                   'Troponina', 'outros');
+  def(['bnp','nt-probnp','nt probnp','pro bnp'],                'BNP', 'outros');
+  def(['amilase ','amilase:'],                                  'Amilase','outros');
+  def(['lipase ','lipase:'],                                    'Lipase','outros');
 
   // ── TIREOIDE ─────────────────────────────────────────────────────
-  def(['tsh','hormonio estimulante da tireoide','hormônio estimulante da tireoide','tsh basal'], 'TSH', 'tir', 0.27, 4.2);
-  def(['t4 livre','t4l','tiroxina livre','t4 free','free t4'],  'T4L', 'tir', 0.9, 1.8);
-  def(['t3 livre','t3l','triiodotironina livre'],               'T3L', 'tir', 2.0, 4.4);
+  def(['tsh','hormonio estimulante da tireoide','hormônio estimulante da tireoide','tsh basal'], 'TSH', 'tir');
+  def(['t4 livre','t4l','tiroxina livre','t4 free','free t4'],  'T4L', 'tir');
+  def(['t3 livre','t3l','triiodotironina livre'],               'T3L', 'tir');
 
   // ── GLICEMIA ─────────────────────────────────────────────────────
-  def(['glicemia','glicose','gli ','gli:','glucose','glycemia','glicemia jejum'], 'GLI', 'glic', 70, 100);
-  def(['hemoglobina glicada','hba1c','a1c ','a1c:','glico-hemoglobina','hemoglobina glicosilada'], 'HbA1c', 'glic', 0, 5.7);
-  def(['insulina ','insulina:'],                                'Insulina','glic', 2, 25);
-  def(['peptideo c','peptídeo c'],                              'PepC','glic', 0.5, 2.0);
-  def(['frutosamina'],                                          'Frutosa','glic', 200, 285);
+  def(['glicemia','glicose','gli ','gli:','glucose','glycemia','glicemia jejum'], 'GLI', 'glic');
+  def(['hemoglobina glicada','hba1c','a1c ','a1c:','glico-hemoglobina','hemoglobina glicosilada'], 'HbA1c', 'glic');
+  def(['insulina ','insulina:'],                                'Insulina','glic');
+  def(['peptideo c','peptídeo c'],                              'PepC','glic');
+  def(['frutosamina'],                                          'Frutosa','glic');
 
   // ── LIPÍDIOS ─────────────────────────────────────────────────────
-  def(['colesterol total','ct ','ct:','colesterol '],           'CT',   'lip', 0, 190);
-  def(['hdl','hdl-colesterol','hdl-c','hdl colesterol'],        'HDL',  'lip', 40, 999);
-  def(['ldl','ldl-colesterol','ldl-c','ldl colesterol'],        'LDL',  'lip', 0, 130);
-  def(['vldl','vldl-colesterol'],                               'VLDL', 'lip', 0, 30);
-  def(['triglicerides','triglicerídeos','tgl','tg ','tg:','triglicérides','triglicerídeos'], 'TGL', 'lip', 0, 150);
-  def(['nao hdl','não hdl','non hdl','colesterol nao hdl'],     'NãoHDL','lip', 0, 160);
+  def(['colesterol total','ct ','ct:','colesterol '],           'CT',   'lip');
+  def(['hdl','hdl-colesterol','hdl-c','hdl colesterol'],        'HDL',  'lip');
+  def(['ldl','ldl-colesterol','ldl-c','ldl colesterol'],        'LDL',  'lip');
+  def(['vldl','vldl-colesterol'],                               'VLDL', 'lip');
+  def(['triglicerides','triglicerídeos','tgl','tg ','tg:','triglicérides','triglicerídeos'], 'TGL', 'lip');
+  def(['nao hdl','não hdl','non hdl','colesterol nao hdl'],     'NãoHDL','lip');
 
   // ── VITAMINAS / ÓSSEO ────────────────────────────────────────────
-  def(['vitamina d','vit d','25-oh','25ohd','25-hidroxivitamina','calcidiol','vit. d'], 'VitD', 'vit', 30, 100);
-  def(['pth','paratormonio','paratormônio','hormonio paratireoide','pth intacto'],      'PTH',  'vit', 15, 65);
+  def(['vitamina d','vit d','25-oh','25ohd','25-hidroxivitamina','calcidiol','vit. d'], 'VitD', 'vit');
+  def(['pth','paratormonio','paratormônio','hormonio paratireoide','pth intacto'],      'PTH',  'vit');
 
   // ── FERRO E HEMATOLOGIA ──────────────────────────────────────────
-  def(['ferro serico','ferro sérico','ferro ','ferro:','iron'],  'Ferro',    'ferro', 50, 170);
-  def(['ferritina ','ferritina:'],                               'Ferritina','ferro', 10, 291);
-  def(['tibc','ctlf','capacidade de ligacao ao ferro','capacidade de ligação'],        'TIBC',      'ferro', 250, 370);
-  def(['saturacao de transferrina','saturação de transferrina','ist ','ist:','isat'],  'IST',       'ferro', 20, 50);
-  def(['vitamina b12','b12 ','b12:','cobalamina'],               'B12',       'ferro', 200, 900);
-  def(['acido folico','ácido fólico','folato ','folato:'],        'AcFol',     'ferro', 2.7, 17);
+  def(['ferro serico','ferro sérico','ferro ','ferro:','iron'],  'Ferro',    'ferro');
+  def(['ferritina ','ferritina:'],                               'Ferritina','ferro');
+  def(['tibc','ctlf','capacidade de ligacao ao ferro','capacidade de ligação'],        'TIBC',      'ferro');
+  def(['saturacao de transferrina','saturação de transferrina','ist ','ist:','isat'],  'IST',       'ferro');
+  def(['vitamina b12','b12 ','b12:','cobalamina'],               'B12',       'ferro');
+  def(['acido folico','ácido fólico','folato ','folato:'],        'AcFol',     'ferro');
   def(['coombs direto','teste de coombs direto','antiglobulina direta'], 'CoomDs', 'ferro', null, null);
-  def(['haptoglobina ','haptoglobina:'],                         'Haptoglobina','ferro', 30, 200);
+  def(['haptoglobina ','haptoglobina:'],                         'Haptoglobina','ferro');
 
   // ── EAS / URINA ──────────────────────────────────────────────────
   def(['eas','exame de urina','urina tipo 1','urina tipo i','urinalise','urinálise','exame comum de urina','ecu','urina rotina'], 'EAS', 'eas', null, null);
   def(['urocultura','cultura de urina','cultura urina'],         'Urocultura','eas', null, null);
-  def(['microalbuminuria','microalbuminúria','albumina urinaria'], 'Microalb','eas', 0, 30);
+  def(['microalbuminuria','microalbuminúria','albumina urinaria'], 'Microalb','eas');
 
   // ── SOROLOGIAS ───────────────────────────────────────────────────
   def(['hbsag','hbs ag','antigenio de superficie hb','hbsAg'],   'HBsAg',     'soro', null, null);
@@ -201,11 +201,11 @@
   def(['brcucella','brucela'],                                   'Brucela',   'soro', null, null);
 
   // ── GASOMETRIA ───────────────────────────────────────────────────
-  def(['ph arterial','ph ','ph:'],                               'pH',     'gaso', 7.35, 7.45);
-  def(['pco2','pressao co2','pressão co2','pco2 arterial'],      'pCO2',   'gaso', 35, 45);
-  def(['po2','pressao o2','pao2'],                               'pO2',    'gaso', 80, 100);
-  def(['sato2','saturacao o2 arterial','spao2'],                 'SatO2',  'gaso', 95, 100);
-  def(['excesso de base','base excess','be ','be:'],             'BE',     'gaso', -2, 2);
+  def(['ph arterial','ph ','ph:'],                               'pH',     'gaso');
+  def(['pco2','pressao co2','pressão co2','pco2 arterial'],      'pCO2',   'gaso');
+  def(['po2','pressao o2','pao2'],                               'pO2',    'gaso');
+  def(['sato2','saturacao o2 arterial','spao2'],                 'SatO2',  'gaso');
+  def(['excesso de base','base excess','be ','be:'],             'BE',     'gaso');
 
   // ════════════════════════════════════════════════════════════════
   // GRUPOS TIA JU — ordem e separador |
@@ -292,17 +292,9 @@
     return null;
   }
 
-  function isAbnormal(val, entry) {
-    if (!entry || entry.min == null || val.qual) return false;
-    const v = typeof val.num === 'number' ? val.num : parseBR(String(val.v).replace(/[<>≤≥,]/g, x => x === ',' ? '.' : ''));
-    if (isNaN(v)) return false;
-    return v < entry.min || v > entry.max;
-  }
-
   function fmtItem(entry, val) {
-    const flag = isAbnormal(val, entry) ? '***' : '';
     const vStr = val.neg ? 'NR' : val.v;
-    return `${entry.abbr} ${vStr}${flag}`.trim();
+    return `${entry.abbr} ${vStr}`.trim();
   }
 
   // ════════════════════════════════════════════════════════════════
