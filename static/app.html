@@ -692,7 +692,7 @@
                 </div>
                 <textarea id="output-exames" readonly style="height: 300px;"></textarea>
             </div>
-            <div class="disclaimer">⚠️ ATENÇÃO: Revise todas as informações aqui contidas. O criador deste aplicativo não se responsabiliza por erros que o sistema possa gerar. Recomenda-se sempre revisar os resultados antes de utilizar.</div>
+            <div class="disclaimer">⚠️ Uso com responsabilidade: o Prontu auxilia na organização das informações, mas pode cometer erros. Sempre revise o resultado antes de copiar para o prontuário oficial. O desenvolvedor não se responsabiliza por imprecisões clínicas geradas pela ferramenta.</div>
         </div>
         
         <!-- MÓDULO PRONTUÁRIO -->
@@ -757,7 +757,7 @@
                 <textarea id="output-nao-classificado" readonly style="width: 100%; height: 150px; padding: 10px; border: 1px solid #f9a825; border-radius: 4px; font-family: monospace; font-size: 12px; background: #fffde7; resize: vertical;"></textarea>
             </div>
 
-            <div class="disclaimer">⚠️ ATENÇÃO: Revise todas as informações aqui contidas. O criador deste aplicativo não se responsabiliza por erros que o sistema possa gerar. Recomenda-se sempre revisar os resultados antes de utilizar.</div>
+            <div class="disclaimer">⚠️ Uso com responsabilidade: o Prontu auxilia na organização das informações, mas pode cometer erros. Sempre revise o resultado antes de copiar para o prontuário oficial. O desenvolvedor não se responsabiliza por imprecisões clínicas geradas pela ferramenta.</div>
         </div>
         
     <!-- MÓDULO RECEITAS -->
@@ -887,7 +887,7 @@
             </div>
             <textarea id="output-evolucao" readonly style="height:280px;font-family:'Courier New',monospace;font-size:13px;line-height:1.7;"></textarea>
         </div>
-        <div class="disclaimer">⚠️ Revise sempre antes de registrar no prontuário.</div>
+        <div class="disclaimer">⚠️ A ferramenta pode cometer erros — revise antes de registrar no prontuário.</div>
     </div>
 
     <!-- MÓDULO GASOMETRIA -->
@@ -996,7 +996,7 @@
             </div>
         </div>
 
-        <div class="disclaimer">⚠️ Ferramenta de apoio clínico — sempre interprete no contexto do paciente.</div>
+        <div class="disclaimer">⚠️ Ferramenta de apoio clínico. Resultados podem conter erros — sempre interprete no contexto clínico do paciente.</div>
     </div>
 
     <!-- MÓDULO MODELOS -->
@@ -1173,7 +1173,7 @@
             </div>
         </div>
 
-        <div class="disclaimer">⚠️ ATENÇÃO: Revise todas as informações aqui contidas. O criador deste aplicativo não se responsabiliza por erros que o sistema possa gerar. Recomenda-se sempre revisar os resultados antes de utilizar.</div>
+        <div class="disclaimer">⚠️ Uso com responsabilidade: o Prontu auxilia na organização das informações, mas pode cometer erros. Sempre revise o resultado antes de copiar para o prontuário oficial. O desenvolvedor não se responsabiliza por imprecisões clínicas geradas pela ferramenta.</div>
     </div>
 
     <!-- MODAL DE REVISÃO -->
@@ -1781,7 +1781,7 @@
 
         const sectionMap = [
             { padrao: 'Identificação',
-              patterns: [/identifica[cç][aã]o/i, /dados\s+do\s+paciente/i, /dados\s+pessoais/i] },
+              patterns: [/identifica[cç][aã]o/i, /dados\s+do\s+paciente/i, /dados\s+pessoais/i, /\bID\b/, /\bIDENT\b/] },
             { padrao: 'Nível de Suporte',
               patterns: [/nível\s+de\s+suporte/i, /cuidados.*paliativo/i, /medidas\s+invasiva/i] },
             { padrao: 'Diagnósticos Atuais',
@@ -1798,7 +1798,7 @@
             { padrao: 'Medicação de Uso Contínuo',
               patterns: [/medica[cç][aã]o\s+em\s+uso/i, /\bMUC\b/, /medicamentos?\s+em\s+uso/i, /medica[cç][oõ]es/i, /farmacoterapia/i, /em\s+uso\s+contin/i, /medicamentos?:/i] },
             { padrao: 'Histórico Familiar',
-              patterns: [/histórico\s+familiar/i, /\bhf\b/i, /antecedente.*familiar/i] },
+              patterns: [/histórico\s+familiar/i, /\bhf\b/i, /antecedente.*familiar/i, /\bAF\b/] },
             { padrao: 'Antibioticoterapia',
               patterns: [/antibi[oó]tico/i, /\bATB\b/, /antimicrobiano/i, /antibioticoterapia/i] },
             { padrao: 'Culturas',
@@ -1860,6 +1860,7 @@
             { key: 'Alergias',                                   obrigatorio: true  },
             { key: 'Medicação de Uso Contínuo',                  obrigatorio: true  },
             { key: 'Histórico Familiar',                         obrigatorio: false },
+            { key: 'Hábitos de Vida',                              obrigatorio: false },
             { key: 'Antibioticoterapia',                         obrigatorio: false },
             { key: 'Culturas',                                   obrigatorio: false },
             { key: 'Sorologias / Rastreios / Painel Viral',      obrigatorio: false },
@@ -1889,11 +1890,76 @@
             return false;
         }
 
+        // ── TABELA DE ABREVIAÇÕES MÉDICAS ────────────────────────────────────────
+        // Reconhece seção se a linha inteira (sem # e sem :) for uma abreviação conhecida.
+        // Isso resolve o problema de HDA, ID, AF, HL sem hashtag ou dois-pontos.
+        const ABREVIACOES_SECTION = {
+            // Identificação
+            'ID': 'Identificação', 'IDENT': 'Identificação',
+            'IDENTIFICACAO': 'Identificação', 'IDENTIFICAÇÃO': 'Identificação',
+            // HDA / Queixa Principal
+            'HDA': 'HDA', 'HNA': 'HDA', 'HMA': 'HDA',
+            'QP': 'HDA', 'QUEIXA PRINCIPAL': 'HDA',
+            'HISTORIA DA DOENCA ATUAL': 'HDA', 'HISTÓRIA DA DOENÇA ATUAL': 'HDA',
+            'HISTORICO DA DOENCA ATUAL': 'HDA', 'HISTÓRICO DA DOENÇA ATUAL': 'HDA',
+            // Antecedentes / HPP
+            'HPP': 'HPP', 'APP': 'HPP', 'APPA': 'HPP',
+            'ANTECEDENTES': 'HPP', 'ANTECEDENTES PESSOAIS': 'HPP',
+            'HISTORIA PATOLOGICA': 'HPP', 'HISTÓRIA PATOLÓGICA': 'HPP',
+            // Antecedentes Familiares
+            'AF': 'Histórico Familiar', 'HF': 'Histórico Familiar',
+            'ANTECEDENTES FAMILIARES': 'Histórico Familiar',
+            'HISTORICO FAMILIAR': 'Histórico Familiar', 'HISTÓRICO FAMILIAR': 'Histórico Familiar',
+            // Hábitos de Vida
+            'HL': 'Hábitos de Vida', 'HABITOS': 'Hábitos de Vida', 'HÁBITOS': 'Hábitos de Vida',
+            'HABITOS DE VIDA': 'Hábitos de Vida', 'HÁBITOS DE VIDA': 'Hábitos de Vida',
+            'VIDA SOCIAL': 'Hábitos de Vida', 'ESTILO DE VIDA': 'Hábitos de Vida',
+            'TABAGISMO': 'Hábitos de Vida', 'ETILISMO': 'Hábitos de Vida',
+            // Lista de Problemas / Diagnósticos
+            'LP': 'Diagnósticos Atuais', 'LISTA DE PROBLEMAS': 'Diagnósticos Atuais',
+            'DIAGNOSTICOS': 'Diagnósticos Atuais', 'DIAGNÓSTICOS': 'Diagnósticos Atuais',
+            'DIAGNOSTICO': 'Diagnósticos Atuais', 'DIAGNÓSTICO': 'Diagnósticos Atuais',
+            'HIPOTESES DIAGNOSTICAS': 'Diagnósticos Atuais', 'HIPÓTESES DIAGNÓSTICAS': 'Diagnósticos Atuais',
+            'DX': 'Diagnósticos Atuais', 'DG': 'Diagnósticos Atuais',
+            // Medicações
+            'MUC': 'Medicação de Uso Contínuo', 'MEDICAMENTOS': 'Medicação de Uso Contínuo',
+            'MEDICACOES': 'Medicação de Uso Contínuo', 'MEDICAÇÕES': 'Medicação de Uso Contínuo',
+            'MEDICACAO': 'Medicação de Uso Contínuo', 'MEDICAÇÃO': 'Medicação de Uso Contínuo',
+            'FARMACOTERAPIA': 'Medicação de Uso Contínuo',
+            // Exame Físico
+            'EF': 'Exame Físico', 'EF GERAL': 'Exame Físico',
+            'EXAME FISICO': 'Exame Físico', 'EXAME FÍSICO': 'Exame Físico',
+            // Exames Laboratoriais
+            'LABS': 'Exames Laboratoriais', 'LAB': 'Exames Laboratoriais',
+            'LABORATORIO': 'Exames Laboratoriais', 'LABORATÓRIO': 'Exames Laboratoriais',
+            'EXAMES LABORATORIAIS': 'Exames Laboratoriais',
+            // Condutas / Plano
+            'CD': 'Condutas', 'CONDUTA': 'Condutas', 'CONDUTAS': 'Condutas',
+            'PLANO': 'Condutas', 'PLANO TERAPEUTICO': 'Condutas', 'PLANO TERAPÊUTICO': 'Condutas',
+            // Antibióticos
+            'ATB': 'Antibioticoterapia', 'ANTIBIOTICOS': 'Antibioticoterapia',
+            'ANTIBIÓTICOS': 'Antibioticoterapia',
+            // Pendências
+            'PEND': 'Pendências', 'PENDENCIAS': 'Pendências', 'PENDÊNCIAS': 'Pendências',
+            // Evolução
+            'EVOL': 'Evolução Médica', 'EVOLUCAO': 'Evolução Médica', 'EVOLUÇÃO': 'Evolução Médica',
+            // Alergias
+            'ALERGIAS': 'Alergias', 'ALERGIA': 'Alergias',
+        };
+
         function detectProntuarioSection(line) {
             const s = line.trim();
-            if (!s || s.length < 3) return null;
-            // Cabeçalho: começa com #, termina com :, ou all-caps ≤50 chars (linhas longas são conteúdo)
-            const allCaps = /^[^a-záéíóúàâêôãõüçñ]{4,}$/.test(s) && s.length <= 60;
+            if (!s || s.length < 2) return null;
+
+            // Remove marcador # e sufixos de pontuação para comparação
+            const sClean = s.replace(/^#+\s*/, '').replace(/[\s:.\-\/]+$/, '').trim();
+            const sUpper = sClean.toUpperCase();
+
+            // 1. ABREVIAÇÕES: verificação contra tabela (funciona sem # e sem :)
+            if (ABREVIACOES_SECTION[sUpper]) return ABREVIACOES_SECTION[sUpper];
+
+            // 2. HEURÍSTICA DE CABEÇALHO: começa com #, termina com :, ou all-caps ≥4 chars
+            const allCaps = /^[^a-záéíóúàâêôãõüçñ]{4,}/.test(s) && s.length <= 60;
             const isHeader = /^#+/.test(s) || /:\s*$/.test(s) || allCaps;
             if (!isHeader) return null;
 
@@ -1906,11 +1972,11 @@
                 if (!ehEnfermariaGastro && nome.length > 3) {
                     return `Admissão ${admissaoMatch[1].trim()}`;
                 }
-                return 'Admissão Enfermaria Gastroenterologia';
+                return 'Admissão Enfermaria Clínica Médica';
             }
             // Se for só "ADMISSÃO:" ou "ENTRADA:" sem nome específico
             if (/(?:admiss[aã]o|entrada)\s*[:=]?$/i.test(s)) {
-                return 'Admissão Enfermaria Gastroenterologia';
+                return 'Admissão Enfermaria Clínica Médica';
             }
 
             // Padrões fixos
