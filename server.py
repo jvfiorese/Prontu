@@ -42,7 +42,7 @@ from flask_cors import CORS
 
 from database import (
     init_db, create_user, get_user_by_email, get_user_by_id, get_all_users,
-    create_session, get_session, delete_session, delete_user_sessions,
+    create_session, get_session, touch_session, delete_session, delete_user_sessions,
     get_active_session_count, prune_old_sessions,
     rate_limit_check, rate_limit_record, rate_limit_clear, delete_user,
     log_access, get_user_ips, get_suspicious_accounts,
@@ -226,6 +226,9 @@ def app_page():
         html_content = f.read()
 
     user = get_user_by_id(session['user_id'])
+
+    # Renova idle timeout — mantém sessão ativa enquanto o usuário usa o app
+    touch_session(token)
 
     # Registra acesso para detecção de compartilhamento de conta
     client_ip  = _get_client_ip()
