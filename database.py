@@ -113,14 +113,19 @@ def init_db():
             "CREATE INDEX IF NOT EXISTS idx_access_ip       ON access_log(ip)",
             "CREATE INDEX IF NOT EXISTS idx_subs_user       ON subscriptions(user_id)",
         ]
-        # Migração segura: ADD COLUMN IF NOT EXISTS não falha se coluna já existe
-        cur.execute("ALTER TABLE login_attempts ADD COLUMN IF NOT EXISTS bucket TEXT NOT NULL DEFAULT 'login'")
+        # Cria tabelas primeiro
         for s in stmts:
             try:
                 cur.execute(s)
             except Exception:
                 conn.rollback()
                 cur = conn.cursor()
+        # Migração segura: ADD COLUMN IF NOT EXISTS (só depois que a tabela existe)
+        try:
+            cur.execute("ALTER TABLE login_attempts ADD COLUMN IF NOT EXISTS bucket TEXT NOT NULL DEFAULT 'login'")
+        except Exception:
+            conn.rollback()
+            cur = conn.cursor()
     else:
         cur.executescript("""
             CREATE TABLE IF NOT EXISTS users (
