@@ -235,7 +235,7 @@ async function doLogin() {
       body: JSON.stringify({email, password})
     });
     const d = await r.json();
-    if (d.session_token) { window.location.href = '/app?token=' + d.session_token; }
+    if (d.session_token) { window.location.href = '/app'; }
     else showMsg('login-msg', d.error || 'Erro ao entrar.', 'error');
   } catch { showMsg('login-msg', 'Erro de conexão.', 'error'); }
   btn.disabled = false; btn.textContent = 'Entrar →';
@@ -256,7 +256,7 @@ async function doRegister() {
       body: JSON.stringify({name, email, password})
     });
     const d = await r.json();
-    if (d.session_token) { window.location.href = '/app?token=' + d.session_token; }
+    if (d.session_token) { window.location.href = '/app'; }
     else showMsg('register-msg', d.error || 'Erro ao criar conta.', 'error');
   } catch { showMsg('register-msg', 'Erro de conexão.', 'error'); }
   btn.disabled = false; btn.textContent = 'Criar conta →';

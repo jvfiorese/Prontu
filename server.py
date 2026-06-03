@@ -42,7 +42,7 @@ from flask_cors import CORS
 
 from database import (
     init_db, create_user, get_user_by_email, get_user_by_id, get_all_users,
-    create_session, get_session, delete_session, delete_user_sessions,
+    create_session, get_session, touch_session, delete_session, delete_user_sessions,
     get_active_session_count, prune_old_sessions,
     rate_limit_check, rate_limit_record, rate_limit_clear, delete_user,
     log_access, get_user_ips, get_suspicious_accounts,
@@ -65,6 +65,8 @@ ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
 CONTACT_EMAIL  = os.environ.get('CONTACT_EMAIL', '')
 APP_VERSION    = '1.0.0'
 MAX_SESSIONS_PER_USER = 5   # máximo de sessões ativas simultâneas
+IS_PROD        = os.environ.get('RAILWAY_ENVIRONMENT') == 'production'
+COOKIE_NAME    = 'prontu_session'
 
 if not SECRET_KEY:
     raise RuntimeError("RESIDENTEAI_SECRET_KEY não definida. Configure no .env ou no Railway.")
@@ -196,14 +198,12 @@ def index():
 
 @app.route('/app')
 def app_page():
-    token = request.args.get('token', '').strip()
+    # Aceita token via cookie (preferido) ou URL (legado)
+    token = request.cookies.get(COOKIE_NAME, '').strip()
     if not token:
-        return Response(
-            '<html><body style="font-family:sans-serif;padding:40px;text-align:center">'
-            '<h2>⚠️ Acesso inválido</h2><p>Faça login para acessar o app.</p>'
-            '<a href="/">Ir para o login</a></body></html>',
-            mimetype='text/html', status=400
-        )
+        token = request.args.get('token', '').strip()
+    if not token:
+        return redirect('/', 302)
 
     # Valida comprimento mínimo para evitar consultas desnecessárias ao DB
     if len(token) < 20 or len(token) > 200:
@@ -227,6 +227,9 @@ def app_page():
 
     user = get_user_by_id(session['user_id'])
 
+    # Renova idle timeout — mantém sessão ativa enquanto o usuário usa o app
+    touch_session(token)
+
     # Registra acesso para detecção de compartilhamento de conta
     client_ip  = _get_client_ip()
     user_agent = request.headers.get('User-Agent', '')[:512]
@@ -248,7 +251,16 @@ def app_page():
     )
     html_content = html_content.replace('</head>', f'{injection}</head>', 1)
 
-    return Response(html_content, mimetype='text/html')
+    resp = Response(html_content, mimetype='text/html')
+    # Renova o cookie a cada visita (sliding expiry de 30 dias)
+    resp.set_cookie(
+        COOKIE_NAME, token,
+        max_age=30*24*3600,
+        httponly=True,
+        secure=IS_PROD,
+        samesite='Lax'
+    )
+    return resp
 
 
 @app.route('/api/config')
@@ -292,7 +304,10 @@ def api_register():
     create_free_subscription(user['id'])
     logger.info(f"[REGISTER] Novo usuário: {_mask_email(email)} IP:{ip}")
 
-    return jsonify({'success': True, 'session_token': token}), 201
+    resp = jsonify({'success': True, 'session_token': token})
+    resp.set_cookie(COOKIE_NAME, token, max_age=30*24*3600,
+                    httponly=True, secure=IS_PROD, samesite='Lax')
+    return resp, 201
 
 
 @app.route('/api/login', methods=['POST'])
@@ -319,7 +334,10 @@ def api_login():
     token = _make_session_token(user['id'])
     logger.info(f"[LOGIN] {_mask_email(email)} IP:{ip}")
 
-    return jsonify({'success': True, 'session_token': token})
+    resp = jsonify({'success': True, 'session_token': token})
+    resp.set_cookie(COOKIE_NAME, token, max_age=30*24*3600,
+                    httponly=True, secure=IS_PROD, samesite='Lax')
+    return resp
 
 
 @app.route('/api/logout', methods=['POST'])

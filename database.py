@@ -76,6 +76,7 @@ def init_db():
                 token TEXT PRIMARY KEY,
                 user_id INTEGER NOT NULL,
                 expires_at TEXT NOT NULL,
+                last_seen TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )""",
             # login_attempts agora tem campo 'bucket' para separar login/register
@@ -113,13 +114,26 @@ def init_db():
             "CREATE INDEX IF NOT EXISTS idx_access_ip       ON access_log(ip)",
             "CREATE INDEX IF NOT EXISTS idx_subs_user       ON subscriptions(user_id)",
         ]
-        # Migração: adiciona coluna bucket se não existir
-        try:
-            cur.execute("ALTER TABLE login_attempts ADD COLUMN bucket TEXT NOT NULL DEFAULT 'login'")
-        except Exception:
-            pass
+        # Cria tabelas primeiro
         for s in stmts:
-            cur.execute(s)
+            try:
+                cur.execute(s)
+            except Exception:
+                conn.rollback()
+                cur = conn.cursor()
+        # Migrações seguras (após CREATE TABLE)
+        migrations = [
+            "ALTER TABLE login_attempts ADD COLUMN IF NOT EXISTS bucket TEXT NOT NULL DEFAULT 'login'",
+            "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS last_seen TEXT",
+            # Preenche last_seen para sessões antigas
+            "UPDATE sessions SET last_seen = created_at WHERE last_seen IS NULL",
+        ]
+        for m in migrations:
+            try:
+                cur.execute(m)
+            except Exception:
+                conn.rollback()
+                cur = conn.cursor()
     else:
         cur.executescript("""
             CREATE TABLE IF NOT EXISTS users (
@@ -133,6 +147,7 @@ def init_db():
                 token TEXT PRIMARY KEY,
                 user_id INTEGER NOT NULL,
                 expires_at TEXT NOT NULL,
+                last_seen TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
             CREATE TABLE IF NOT EXISTS login_attempts (
@@ -221,28 +236,45 @@ def get_all_users():
 # ── Sessões ───────────────────────────────────────────────────
 
 def create_session(token, user_id, expires_at):
+    now = _now()
     conn = _conn()
     try:
         if USE_PG:
             _run(conn,
-                "INSERT INTO sessions (token, user_id, expires_at, created_at) "
-                "VALUES (?,?,?,?) ON CONFLICT (token) DO UPDATE SET expires_at=EXCLUDED.expires_at",
-                (token, user_id, expires_at, _now()))
+                "INSERT INTO sessions (token, user_id, expires_at, last_seen, created_at) "
+                "VALUES (?,?,?,?,?) ON CONFLICT (token) DO UPDATE SET expires_at=EXCLUDED.expires_at, last_seen=EXCLUDED.last_seen",
+                (token, user_id, expires_at, now, now))
         else:
             _run(conn,
-                "INSERT OR REPLACE INTO sessions (token, user_id, expires_at, created_at) VALUES (?,?,?,?)",
-                (token, user_id, expires_at, _now()))
+                "INSERT OR REPLACE INTO sessions (token, user_id, expires_at, last_seen, created_at) VALUES (?,?,?,?,?)",
+                (token, user_id, expires_at, now, now))
         conn.commit()
     finally:
         conn.close()
 
 
-def get_session(token):
+def get_session(token, idle_hours=8):
+    """Retorna sessão válida apenas se não expirada E usada nas últimas idle_hours horas."""
+    now = _now()
+    idle_cutoff = (datetime.now(timezone.utc) - timedelta(hours=idle_hours)).isoformat()
     conn = _conn()
     try:
-        cur = _run(conn, "SELECT * FROM sessions WHERE token = ? AND expires_at > ?",
-                   (token, _now()))
+        cur = _run(conn,
+            "SELECT * FROM sessions WHERE token = ? AND expires_at > ? AND (last_seen IS NULL OR last_seen > ?)",
+            (token, now, idle_cutoff))
         return _one(cur)
+    finally:
+        conn.close()
+
+
+def touch_session(token):
+    """Atualiza last_seen — chama a cada visita autenticada."""
+    conn = _conn()
+    try:
+        _run(conn, "UPDATE sessions SET last_seen = ? WHERE token = ?", (_now(), token))
+        conn.commit()
+    except Exception:
+        pass
     finally:
         conn.close()
 
