@@ -94,15 +94,18 @@
         
         .btn-back {
             margin-bottom: 16px;
-            padding: 8px 12px;
-            background: transparent;
+            padding: 8px 16px;
+            background: #e53935;
             border: none;
-            color: #666;
+            color: white;
             font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
         }
-        
+
         .btn-back:hover {
-            color: #333;
+            background: #c62828;
+            color: white;
         }
 
         .disclaimer {
@@ -641,11 +644,12 @@
             border-color: #3a5fa0 !important;
         }
         .btn-back {
-            background: transparent !important;
+            background: #c0392b !important;
             border: none !important;
-            color: #3a5878 !important;
+            color: white !important;
+            font-weight: 600 !important;
         }
-        .btn-back:hover { color: #7aA8cc !important; background: transparent !important; }
+        .btn-back:hover { background: #a93226 !important; color: white !important; }
         .btn-primary {
             background: #2d5aa8 !important;
             border-color: #2d5aa8 !important;
@@ -1049,7 +1053,11 @@ Exemplos de entrada aceita:
   Amoxicilina 500mg 8/8h por 7 dias
 
 O Prontu formata automaticamente no padrão de receita médica,
-com posologia e apresentação organizados." style="height: 250px;"></textarea>
+com posologia e apresentação organizados.
+
+Exemplo do que será gerado:
+  Dipirona 500mg — tomar 1 comprimido de 6 em 6 horas se febre ou dor, por até 5 dias.
+  Omeprazol 40mg — tomar 1 cápsula em jejum, diariamente." style="height: 250px;"></textarea>
         </div>
 
         <button class="btn-primary" onclick="processarReceita()">Gerar Receita</button>
@@ -1170,7 +1178,7 @@ O que incluir:
 Exemplo:
 PACIENTE REFERE MELHORA DA DOR ABDOMINAL. AFEBRIL. DIURESE ADEQUADA.
 EF: ABDOME MENOS DOLOROSO, SEM SINAIS DE IRRITAÇÃO PERITONEAL.
-CONDUTA: MANTER ATB / REPETIR HMC APÓS 48H / SOLICITAR TC ABDOME" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:7px;font-size:14px;font-family:inherit;outline:none;resize:vertical;background:#fafafa;"></textarea>
+PENDÊNCIAS: AGUARDA RESULTADO DE HMC / TC ABDOME SOLICITADA" style="width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:7px;font-size:14px;font-family:inherit;outline:none;resize:vertical;background:#fafafa;"></textarea>
         </div>
 
         <button class="btn-primary" onclick="evoGerar()">Gerar Evolução</button>
@@ -1332,124 +1340,6 @@ CONDUTA: MANTER ATB / REPETIR HMC APÓS 48H / SOLICITAR TC ABDOME" style="width:
             <textarea id="conteudo-modelo" readonly style="width: 100%; height: 500px; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 12px;"></textarea>
         </div>
 
-        <!-- MÓDULO INSULINA -->
-        <div id="modulo-insulina" class="module">
-            <button class="btn-back" onclick="voltarMenu()">← Voltar</button>
-            <h2>Calculadora de Insulina</h2>
-
-            <div style="background: #f0f9ff; padding: 14px; border-radius: 6px; border-left: 4px solid #0ea5e9; margin-bottom: 20px;">
-                <p style="color: #1e40af; font-size: 13px; margin: 0;">
-                    💡 <strong>Dica:</strong> Selecione os tipos de insulina utilizados e informe as doses. 1 caneta = 300 UI (3 mL × 100 UI/mL).
-                </p>
-            </div>
-
-            <!-- REGULAR -->
-            <div style="background: white; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 12px; overflow: hidden;">
-                <label style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: bold; color: #333; margin: 0;">
-                    <input type="checkbox" id="usar-regular" onchange="toggleInsulina('regular')" style="width: 16px; height: 16px; cursor: pointer;">
-                    Insulina Regular 100 UI/ml
-                    <small style="color: #888; font-weight: normal; margin-left: auto;">30 min antes das refeições</small>
-                </label>
-                <div id="doses-regular" style="display: none; padding: 12px 14px; border-top: 1px solid #eee; background: #fafafa;">
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <div>
-                            <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Café da manhã (UI)</label>
-                            <input type="number" id="regular-manha" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
-                        </div>
-                        <div>
-                            <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Almoço (UI)</label>
-                            <input type="number" id="regular-almoco" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
-                        </div>
-                        <div>
-                            <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Jantar (UI)</label>
-                            <input type="number" id="regular-jantar" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
-                        </div>
-                    </div>
-                    <div id="resumo-regular" style="margin-top: 8px; font-size: 12px; color: #0ea5e9; font-weight: bold;"></div>
-                </div>
-            </div>
-
-            <!-- NPH -->
-            <div style="background: white; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 12px; overflow: hidden;">
-                <label style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: bold; color: #333; margin: 0;">
-                    <input type="checkbox" id="usar-nph" onchange="toggleInsulina('nph')" style="width: 16px; height: 16px; cursor: pointer;">
-                    Insulina NPH 100 UI/ml
-                    <small style="color: #888; font-weight: normal; margin-left: auto;">Ação intermediária</small>
-                </label>
-                <div id="doses-nph" style="display: none; padding: 12px 14px; border-top: 1px solid #eee; background: #fafafa;">
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 340px;">
-                        <div>
-                            <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Manhã (UI)</label>
-                            <input type="number" id="nph-manha" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
-                        </div>
-                        <div>
-                            <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Noite / ao deitar (UI)</label>
-                            <input type="number" id="nph-noite" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
-                        </div>
-                    </div>
-                    <div id="resumo-nph" style="margin-top: 8px; font-size: 12px; color: #0ea5e9; font-weight: bold;"></div>
-                </div>
-            </div>
-
-            <!-- GLARGINA -->
-            <div style="background: white; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 12px; overflow: hidden;">
-                <label style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: bold; color: #333; margin: 0;">
-                    <input type="checkbox" id="usar-glargina" onchange="toggleInsulina('glargina')" style="width: 16px; height: 16px; cursor: pointer;">
-                    Insulina Glargina 100 UI/ml
-                    <small style="color: #888; font-weight: normal; margin-left: auto;">Longa duração — 1×/dia</small>
-                </label>
-                <div id="doses-glargina" style="display: none; padding: 12px 14px; border-top: 1px solid #eee; background: #fafafa;">
-                    <div style="max-width: 180px;">
-                        <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Dose única diária (UI)</label>
-                        <input type="number" id="glargina-dose" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
-                    </div>
-                    <div id="resumo-glargina" style="margin-top: 8px; font-size: 12px; color: #0ea5e9; font-weight: bold;"></div>
-                </div>
-            </div>
-
-            <!-- ANÁLOGO ULTRARRÁPIDA -->
-            <div style="background: white; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 12px; overflow: hidden;">
-                <label style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: bold; color: #333; margin: 0;">
-                    <input type="checkbox" id="usar-analogo" onchange="toggleInsulina('analogo')" style="width: 16px; height: 16px; cursor: pointer;">
-                    Análogo Ultrarrápida
-                    <small style="color: #888; font-weight: normal; margin-left: auto;">Imediatamente antes das refeições</small>
-                </label>
-                <div id="doses-analogo" style="display: none; padding: 12px 14px; border-top: 1px solid #eee; background: #fafafa;">
-                    <div style="margin-bottom: 10px;">
-                        <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Tipo</label>
-                        <select id="analogo-tipo" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; background: white;">
-                            <option value="Asparte">Asparte (NovoRapid)</option>
-                            <option value="Lispro">Lispro (Humalog)</option>
-                            <option value="Glulisina">Glulisina (Apidra)</option>
-                        </select>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <div>
-                            <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Café da manhã (UI)</label>
-                            <input type="number" id="analogo-manha" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
-                        </div>
-                        <div>
-                            <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Almoço (UI)</label>
-                            <input type="number" id="analogo-almoco" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
-                        </div>
-                        <div>
-                            <label style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Jantar (UI)</label>
-                            <input type="number" id="analogo-jantar" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" oninput="atualizarResumoInsulina()">
-                        </div>
-                    </div>
-                    <div id="resumo-analogo" style="margin-top: 8px; font-size: 12px; color: #0ea5e9; font-weight: bold;"></div>
-                </div>
-            </div>
-
-            <!-- RESUMO GERAL -->
-            <div id="resumo-geral-insulina" style="display: none; background: #e0f2fe; padding: 14px; border-radius: 6px; border-left: 4px solid #0ea5e9; margin-bottom: 16px;">
-                <div style="font-weight: bold; color: #0ea5e9; margin-bottom: 6px;">Resumo do esquema</div>
-                <div id="resumo-geral-texto" style="font-size: 13px; color: #333; line-height: 1.9;"></div>
-            </div>
-
-            <button class="btn-primary" onclick="gerarReceitaInsulina()" style="width: 100%; padding: 12px; font-size: 14px;">✅ Gerar Receita com estes Valores</button>
-        </div>
-
         <!-- Tela 4: Criar Novo Modelo -->
         <div id="tela-novo-modelo" style="display: none;">
             <button class="btn-secondary" onclick="voltarModelos()" style="margin-bottom: 16px;">← Voltar para Modelos</button>
@@ -1473,6 +1363,120 @@ CONDUTA: MANTER ATB / REPETIR HMC APÓS 48H / SOLICITAR TC ABDOME" style="width:
         </div>
 
         <div class="disclaimer">⚠️ Uso com responsabilidade: o Prontu auxilia na organização das informações, mas pode cometer erros. Sempre revise o resultado antes de copiar para o prontuário oficial. O desenvolvedor não se responsabiliza por imprecisões clínicas geradas pela ferramenta.</div>
+    </div>
+
+    <!-- MÓDULO INSULINA -->
+    <div id="modulo-insulina" class="module">
+        <button class="btn-back" onclick="voltarMenu()">← Voltar</button>
+        <h2>💉 Calculadora de Insulina</h2>
+        <p class="description">Selecione os tipos de insulina prescritos, informe as doses e gere a receita formatada. 1 caneta = 300 UI.</p>
+
+        <!-- REGULAR -->
+        <div style="background: #111e38; border-radius: 8px; border: 1px solid #223358; margin-bottom: 12px; overflow: hidden;">
+            <label style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: bold; color: #c0d8f0; margin: 0;">
+                <input type="checkbox" id="usar-regular" onchange="toggleInsulina('regular')" style="width: 16px; height: 16px; cursor: pointer; accent-color: #2d5aa8;">
+                Insulina Regular 100 UI/ml
+                <small style="color: #3a5878; font-weight: normal; margin-left: auto;">30 min antes das refeições</small>
+            </label>
+            <div id="doses-regular" style="display: none; padding: 12px 14px; border-top: 1px solid #1a3050; background: #0c1a30;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div>
+                        <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Café da manhã (UI)</label>
+                        <input type="number" id="regular-manha" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;" oninput="atualizarResumoInsulina()">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Almoço (UI)</label>
+                        <input type="number" id="regular-almoco" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;" oninput="atualizarResumoInsulina()">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Jantar (UI)</label>
+                        <input type="number" id="regular-jantar" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;" oninput="atualizarResumoInsulina()">
+                    </div>
+                </div>
+                <div id="resumo-regular" style="margin-top: 8px; font-size: 12px; color: #4a80d0; font-weight: bold;"></div>
+            </div>
+        </div>
+
+        <!-- NPH -->
+        <div style="background: #111e38; border-radius: 8px; border: 1px solid #223358; margin-bottom: 12px; overflow: hidden;">
+            <label style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: bold; color: #c0d8f0; margin: 0;">
+                <input type="checkbox" id="usar-nph" onchange="toggleInsulina('nph')" style="width: 16px; height: 16px; cursor: pointer; accent-color: #2d5aa8;">
+                Insulina NPH 100 UI/ml
+                <small style="color: #3a5878; font-weight: normal; margin-left: auto;">Ação intermediária</small>
+            </label>
+            <div id="doses-nph" style="display: none; padding: 12px 14px; border-top: 1px solid #1a3050; background: #0c1a30;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 340px;">
+                    <div>
+                        <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Manhã (UI)</label>
+                        <input type="number" id="nph-manha" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;" oninput="atualizarResumoInsulina()">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Noite / ao deitar (UI)</label>
+                        <input type="number" id="nph-noite" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;" oninput="atualizarResumoInsulina()">
+                    </div>
+                </div>
+                <div id="resumo-nph" style="margin-top: 8px; font-size: 12px; color: #4a80d0; font-weight: bold;"></div>
+            </div>
+        </div>
+
+        <!-- GLARGINA -->
+        <div style="background: #111e38; border-radius: 8px; border: 1px solid #223358; margin-bottom: 12px; overflow: hidden;">
+            <label style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: bold; color: #c0d8f0; margin: 0;">
+                <input type="checkbox" id="usar-glargina" onchange="toggleInsulina('glargina')" style="width: 16px; height: 16px; cursor: pointer; accent-color: #2d5aa8;">
+                Insulina Glargina 100 UI/ml
+                <small style="color: #3a5878; font-weight: normal; margin-left: auto;">Longa duração — 1×/dia</small>
+            </label>
+            <div id="doses-glargina" style="display: none; padding: 12px 14px; border-top: 1px solid #1a3050; background: #0c1a30;">
+                <div style="max-width: 180px;">
+                    <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Dose única diária (UI)</label>
+                    <input type="number" id="glargina-dose" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;" oninput="atualizarResumoInsulina()">
+                </div>
+                <div id="resumo-glargina" style="margin-top: 8px; font-size: 12px; color: #4a80d0; font-weight: bold;"></div>
+            </div>
+        </div>
+
+        <!-- ANÁLOGO ULTRARRÁPIDA -->
+        <div style="background: #111e38; border-radius: 8px; border: 1px solid #223358; margin-bottom: 12px; overflow: hidden;">
+            <label style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: bold; color: #c0d8f0; margin: 0;">
+                <input type="checkbox" id="usar-analogo" onchange="toggleInsulina('analogo')" style="width: 16px; height: 16px; cursor: pointer; accent-color: #2d5aa8;">
+                Análogo Ultrarrápida
+                <small style="color: #3a5878; font-weight: normal; margin-left: auto;">Imediatamente antes das refeições</small>
+            </label>
+            <div id="doses-analogo" style="display: none; padding: 12px 14px; border-top: 1px solid #1a3050; background: #0c1a30;">
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Tipo</label>
+                    <select id="analogo-tipo" style="padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;">
+                        <option value="Asparte">Asparte (NovoRapid)</option>
+                        <option value="Lispro">Lispro (Humalog)</option>
+                        <option value="Glulisina">Glulisina (Apidra)</option>
+                    </select>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div>
+                        <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Café da manhã (UI)</label>
+                        <input type="number" id="analogo-manha" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;" oninput="atualizarResumoInsulina()">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Almoço (UI)</label>
+                        <input type="number" id="analogo-almoco" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;" oninput="atualizarResumoInsulina()">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #7a9ccc; display: block; margin-bottom: 4px;">Jantar (UI)</label>
+                        <input type="number" id="analogo-jantar" min="0" step="1" value="0" style="width: 100%; padding: 8px; border: 1px solid #223358; border-radius: 4px; font-size: 14px; background: #0e1e36; color: #c0d8f0;" oninput="atualizarResumoInsulina()">
+                    </div>
+                </div>
+                <div id="resumo-analogo" style="margin-top: 8px; font-size: 12px; color: #4a80d0; font-weight: bold;"></div>
+            </div>
+        </div>
+
+        <!-- RESUMO GERAL -->
+        <div id="resumo-geral-insulina" style="display: none; background: #0c1e38; padding: 14px; border-radius: 8px; border-left: 4px solid #2d5aa8; margin-bottom: 16px;">
+            <div style="font-weight: bold; color: #4a80d0; margin-bottom: 6px;">Resumo do esquema</div>
+            <div id="resumo-geral-texto" style="font-size: 13px; color: #a0c0e0; line-height: 1.9;"></div>
+        </div>
+
+        <button class="btn-primary" onclick="gerarReceitaInsulina()" style="width: 100%; padding: 13px; font-size: 15px;">✅ Gerar Receita com estes Valores</button>
+        <div class="disclaimer">⚠️ Revise as doses antes de transcrever para o prontuário. A calculadora é apenas um auxiliar.</div>
     </div>
 
     <!-- MODAL DE REVISÃO -->
