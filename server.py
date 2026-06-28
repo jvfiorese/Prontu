@@ -88,6 +88,7 @@ def set_security_headers(response):
     response.headers['X-XSS-Protection']         = '1; mode=block'
     response.headers['Referrer-Policy']          = 'strict-origin-when-cross-origin'
     response.headers['Permissions-Policy']       = 'geolocation=(), microphone=(), camera=()'
+    response.headers['X-Robots-Tag']             = 'noindex, nofollow'
     # CSP moderada — permite inline scripts (necessário para window.__USER_INFO__)
     response.headers['Content-Security-Policy']  = (
         "default-src 'self'; "

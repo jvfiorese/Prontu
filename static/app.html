@@ -865,6 +865,7 @@
             background: #0c1a30 !important;
         }
         </style>
+<script src="/shared-exam-parser.js"></script>
 <script src="/exames-tiaju.js"></script>
 </head>
 <body>
@@ -1063,6 +1064,10 @@ Exemplo do que será gerado:
         <button class="btn-primary" onclick="processarReceita()">Gerar Receita</button>
 
         <div id="resultado-receita" class="result-area">
+            <div class="result-header">
+                <h4>Receita Gerada</h4>
+                <button class="btn-copy" onclick="copiarReceita()">Copiar</button>
+            </div>
             <textarea id="output-receita" readonly style="height: 400px;"></textarea>
         </div>
     </div>
@@ -2266,8 +2271,8 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
 
                 div.innerHTML = `
                     <div class="revision-item-info">
-                        <div class="revision-item-value">${item.exam}: ${item.value}</div>
-                        <div class="revision-item-confidence">Confiança: ${Math.round(item.confidence * 100)}% • Detectado: ${item.category}</div>
+                        <div class="revision-item-value">${_esc(String(item.exam || ''))}: ${_esc(String(item.value || ''))}</div>
+                        <div class="revision-item-confidence">Confiança: ${Math.round(item.confidence * 100)}% • Detectado: ${_esc(String(item.category || ''))}</div>
                     </div>
                 `;
                 div.appendChild(select);
@@ -2615,9 +2620,7 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
 
         function parseProntuario(text) {
             try {
-                console.log('Iniciando parseProntuario com', text.length, 'caracteres');
                 const lines = text.split('\n');
-                console.log('Dividido em', lines.length, 'linhas');
                 const sections = {};
                 const unmatched = [];
                 let currentSection = null;
@@ -2639,8 +2642,6 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
 
                 for (const line of lines) {
                     lineCount++;
-                    if (lineCount % 100 === 0) console.log('Processadas', lineCount, 'linhas...');
-
                     const matched = detectProntuarioSection(line);
                     if (matched) {
                         flush();
@@ -2668,10 +2669,8 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
                 if (sections['Exames Complementares Mistos']) {
                     distribuirExamesComplementares(sections['Exames Complementares Mistos'], sections);
                     delete sections['Exames Complementares Mistos'];
-                    console.log('Exames complementares redistribuídos para seções específicas');
                 }
 
-                console.log('parseProntuario completado: encontradas', Object.keys(sections).length, 'seções');
                 return { sections, unmatched };
             } catch (e) {
                 console.error('ERRO em parseProntuario:', e);
@@ -2805,7 +2804,6 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
 
         function processarProntuario() {
             try {
-                console.log('Iniciando processarProntuario...');
                 const input = document.getElementById('input-prontuario').value.trim();
                 const aviso = document.getElementById('aviso-prontuario');
                 const resultado = document.getElementById('resultado-prontuario');
@@ -2826,12 +2824,9 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
                 }
 
                 aviso.classList.remove('show');
-                console.log('Chamando parseProntuario...');
                 const parsed = parseProntuario(input);
-                console.log('parseProntuario completo, formatando output...');
                 const { main, naoClassificado } = formatProntuarioOutput(parsed);
                 output.value = main;
-                console.log('Formatação completa');
 
                 // Mostrar coluna direita (resultado) em flex para layout side-by-side
                 resultado.style.display = 'flex';
@@ -2853,7 +2848,6 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
                     outNaoClass.value = '';
                     boxNaoClass.style.display = 'none';
                 }
-                console.log('processarProntuario finalizado com sucesso');
             } catch (e) {
                 console.error('ERRO em processarProntuario:', e);
                 showToast('❌ Erro ao processar prontuário: ' + e.message, 'error', 4000);
@@ -2909,7 +2903,6 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
 
         function processarReceita() {
             try {
-                console.log('Iniciando processarReceita...');
                 const input = document.getElementById('input-receita').value.trim();
                 const output = document.getElementById('output-receita');
                 const resultado = document.getElementById('resultado-receita');
@@ -2919,11 +2912,8 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
                     return;
                 }
 
-                console.log('Chamando formatarReceitaLucas...');
                 output.value = formatarReceitaLucas(input);
-                console.log('Formatação completa');
                 resultado.classList.add('show');
-                console.log('processarReceita finalizado com sucesso');
             } catch (e) {
                 console.error('ERRO em processarReceita:', e);
                 showToast('❌ Erro ao processar receita: ' + e.message, 'error', 4000);
@@ -2939,15 +2929,12 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
 
         function formatarReceitaLucas(texto) {
             try {
-                console.log('Iniciando formatarReceitaLucas com', texto.length, 'caracteres');
                 const linhas = texto.split('\n').filter(l => l.trim());
-                console.log('Dividido em', linhas.length, 'linhas');
                 const medicacoes = [];
 
                 // Parse das linhas - aceita múltiplos formatos
                 for (let i = 0; i < linhas.length; i++) {
                     const linha = linhas[i];
-                    console.log('Processando linha', i + 1, ':', linha.substring(0, 50));
 
                     // Tenta split por | (formato com barras)
                     let partes = linha.includes('|') ? linha.split('|').map(p => p.trim()) : [];
@@ -2981,14 +2968,11 @@ PACIENTE REFERE MELHORA PROGRESSIVA DA DOR ABDOMINAL, AINDA COM NÁUSEAS LEVES A
                     });
                 }
 
-                console.log('Medicações parseadas:', medicacoes.length);
                 // Classifica e monta seções
                 const secoes = classificarMedicacoes(medicacoes);
-                console.log('Medicações classificadas');
 
                 // Formata output
                 const result = gerarReceitaLucas(secoes);
-                console.log('formatarReceitaLucas completo');
                 return result;
             } catch (e) {
                 console.error('ERRO em formatarReceitaLucas:', e);
@@ -3481,7 +3465,6 @@ Responsavel: ___________________________  Data/Hora: ___/___/___  ___h___`
 
         function abrirCategoria(categoria) {
             try {
-                console.log('Abrindo categoria:', categoria);
                 categoriaAtual = categoria;
                 document.getElementById('tela-categorias').style.display = 'none';
                 document.getElementById('tela-modelos').style.display = 'block';
@@ -3493,7 +3476,6 @@ Responsavel: ___________________________  Data/Hora: ___/___/___  ___h___`
 
                 // Modelos padrão
                 const modelos = modelosConfig[categoria] || [];
-                console.log('Modelos padrão encontrados:', modelos.length);
 
                 for (const modelo of modelos) {
                     const nomeDisplay = modelo.replace('.txt', '');
@@ -3531,7 +3513,6 @@ Responsavel: ___________________________  Data/Hora: ___/___/___  ___h___`
                     btnNovoExistente.style.display = 'block';
                 }
 
-                console.log('abrirCategoria completo para:', categoria);
             } catch (e) {
                 console.error('ERRO em abrirCategoria:', e);
                 showToast('❌ Erro ao abrir categoria: ' + e.message, 'error', 4000);
@@ -4171,6 +4152,8 @@ SINAIS DE ALERTA:
         function tbInitAccountMenu() {
             const info    = window.__USER_INFO__ || {};
             const email   = _esc(info.email   || '');
+            // Sem autenticação ativa — não exibe painel de conta
+            if (!info.email) return;
             const contact = _esc(info.contact_email || '');
             const version = _esc(info.version || '');
             const sessionToken = info.session_token || '';
