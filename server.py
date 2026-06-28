@@ -191,33 +191,8 @@ def _safe_int(value, default, min_val, max_val):
 
 # ─── Páginas ─────────────────────────────────────────────────
 
-@app.route('/')
-def index():
-    return send_from_directory('static', 'index.html')
-
-
-@app.route('/app')
-def app_page():
-    # Aceita token via cookie (preferido) ou URL (legado)
-    token = request.cookies.get(COOKIE_NAME, '').strip()
-    if not token:
-        token = request.args.get('token', '').strip()
-    if not token:
-        return redirect('/', 302)
-
-    # Valida comprimento mínimo para evitar consultas desnecessárias ao DB
-    if len(token) < 20 or len(token) > 200:
-        return redirect('/', 302)
-
-    session = get_session(token)
-    if not session:
-        return Response(
-            '<html><body style="font-family:sans-serif;padding:40px;text-align:center">'
-            '<h2>⏰ Sessão expirada</h2><p>Faça login novamente.</p>'
-            '<a href="/">Ir para o login</a></body></html>',
-            mimetype='text/html', status=401
-        )
-
+def _serve_app_direct():
+    """Serve app.html sem autenticação (login desabilitado temporariamente)."""
     html_path = os.path.join(app.static_folder, 'app.html')
     if not os.path.exists(html_path):
         return jsonify({'error': 'Arquivo não encontrado'}), 404
@@ -225,42 +200,77 @@ def app_page():
     with open(html_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
 
-    user = get_user_by_id(session['user_id'])
-
-    # Renova idle timeout — mantém sessão ativa enquanto o usuário usa o app
-    touch_session(token)
-
-    # Registra acesso para detecção de compartilhamento de conta
-    client_ip  = _get_client_ip()
-    user_agent = request.headers.get('User-Agent', '')[:512]
-    log_access(session['user_id'], client_ip, user_agent, '/app')
-
     user_info = {
-        'email':         user['email'] if user else '',
-        'name':          user['name']  if user else '',
+        'email':         '',
+        'name':          '',
         'contact_email': CONTACT_EMAIL,
         'version':       APP_VERSION,
-        'session_token': token,
+        'session_token': '',
     }
 
     injection = (
         f"\n<script>"
         f"window.__USER_INFO__ = {json.dumps(user_info)};"
-        f"window.__SESSION_TOKEN__ = {json.dumps(token)};"
+        f"window.__SESSION_TOKEN__ = '';"
         f"</script>\n"
     )
     html_content = html_content.replace('</head>', f'{injection}</head>', 1)
+    return Response(html_content, mimetype='text/html')
 
-    resp = Response(html_content, mimetype='text/html')
-    # Renova o cookie a cada visita (sliding expiry de 30 dias)
-    resp.set_cookie(
-        COOKIE_NAME, token,
-        max_age=30*24*3600,
-        httponly=True,
-        secure=IS_PROD,
-        samesite='Lax'
-    )
-    return resp
+
+@app.route('/')
+def index():
+    # LOGIN DESABILITADO — acesso direto ao app para fase de testes
+    return _serve_app_direct()
+
+
+@app.route('/app')
+def app_page():
+    # LOGIN DESABILITADO — redireciona para / onde o app está disponível
+    return redirect('/', 302)
+
+    # ── Código de autenticação (preservado para reativar depois) ──
+    # token = request.cookies.get(COOKIE_NAME, '').strip()
+    # if not token:
+    #     token = request.args.get('token', '').strip()
+    # if not token:
+    #     return redirect('/', 302)
+    # if len(token) < 20 or len(token) > 200:
+    #     return redirect('/', 302)
+    # session = get_session(token)
+    # if not session:
+    #     return Response(
+    #         '<html><body style="font-family:sans-serif;padding:40px;text-align:center">'
+    #         '<h2>⏰ Sessão expirada</h2><p>Faça login novamente.</p>'
+    #         '<a href="/">Ir para o login</a></body></html>',
+    #         mimetype='text/html', status=401
+    #     )
+    # html_path = os.path.join(app.static_folder, 'app.html')
+    # with open(html_path, 'r', encoding='utf-8') as f:
+    #     html_content = f.read()
+    # user = get_user_by_id(session['user_id'])
+    # touch_session(token)
+    # client_ip  = _get_client_ip()
+    # user_agent = request.headers.get('User-Agent', '')[:512]
+    # log_access(session['user_id'], client_ip, user_agent, '/app')
+    # user_info = {
+    #     'email': user['email'] if user else '',
+    #     'name': user['name'] if user else '',
+    #     'contact_email': CONTACT_EMAIL,
+    #     'version': APP_VERSION,
+    #     'session_token': token,
+    # }
+    # injection = (
+    #     f"\n<script>"
+    #     f"window.__USER_INFO__ = {json.dumps(user_info)};"
+    #     f"window.__SESSION_TOKEN__ = {json.dumps(token)};"
+    #     f"</script>\n"
+    # )
+    # html_content = html_content.replace('</head>', f'{injection}</head>', 1)
+    # resp = Response(html_content, mimetype='text/html')
+    # resp.set_cookie(COOKIE_NAME, token, max_age=30*24*3600,
+    #                 httponly=True, secure=IS_PROD, samesite='Lax')
+    # return resp
 
 
 @app.route('/api/config')
